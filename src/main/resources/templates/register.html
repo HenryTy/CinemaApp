@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rejestracja</title>
+</head>
+<body>
+    <h1>Rejestracja</h1>
+
+    <form action="#" th:action="@{/register}" th:object="${userForm}" method="post">
+        <table>
+            <tr>
+                <td>Imię:</td>
+                <td><input type="text" th:field="*{name}"></td>
+                <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+            </tr>
+            <tr>
+                <td>Nazwisko:</td>
+                <td><input type="text" th:field="*{surname}"></td>
+                <td th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Surname Error</td>
+            </tr>
+            <tr>
+                <td>Data urodzenia:</td>
+                <td><input type="date" th:field="*{dateOfBirth}"></td>
+                <td th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Date Of Birth Error</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td><input type="text" th:field="*{email}"></td>
+                <td th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</td>
+            </tr>
+            <tr>
+                <td>Hasło:</td>
+                <td><input type="password" th:field="*{password}"></td>
+                <td th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</td>
+            </tr>
+            <tr>
+                <td>Powtórz hasło:</td>
+                <td><input type="password" th:field="*{matchingPassword}"></td>
+                <td th:if="${#fields.hasErrors('global')}" th:errors="*{global}">Confirm Password Error</td>
+            </tr>
+        </table>
+        <button type="submit">Zatwierdź</button>
+    </form>
+
+    <a href="/login">Zaloguj się</a>
+</body>
+</html>

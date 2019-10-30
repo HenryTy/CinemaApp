@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil</title>
+</head>
+<body>
+    <div th:replace="main.html :: mainMenu">
+    </div>
+    <br><br>
+    <table border="1">
+        <tr>
+            <td>Imię:</td>
+            <td th:text="${user.name}"></td>
+        </tr>
+        <tr>
+            <td>Nazwisko:</td>
+            <td th:text="${user.surname}"></td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td th:text="${user.email}"></td>
+        </tr>
+    </table>
+</body>
+</html>

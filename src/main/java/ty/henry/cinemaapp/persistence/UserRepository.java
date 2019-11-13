@@ -8,4 +8,6 @@ import ty.henry.cinemaapp.model.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
     User findByEmail(String email);
+
+    void deleteByEmail(String email);
 }

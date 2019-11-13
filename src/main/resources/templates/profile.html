@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Profil</title>
@@ -21,6 +22,18 @@
             <td>Email:</td>
             <td th:text="${user.email}"></td>
         </tr>
+        <tr>
+            <td>Data urodzenia:</td>
+            <td th:text="${user.dateOfBirth}"></td>
+        </tr>
     </table>
+    <span sec:authorize="hasRole('ROLE_USER')">
+        <br>
+        <a href="/edit-user"><button>Edytuj dane</button></a>
+        <br><br>
+        <form th:action="@{/delete-user}" method="post">
+            <input type="submit" value="Usuń konto">
+        </form>
+    </span>
 </body>
 </html>

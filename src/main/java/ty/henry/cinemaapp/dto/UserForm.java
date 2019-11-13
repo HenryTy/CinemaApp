@@ -3,33 +3,44 @@ package ty.henry.cinemaapp.dto;
 import org.springframework.format.annotation.DateTimeFormat;
 import ty.henry.cinemaapp.validation.PasswordMatches;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-@PasswordMatches(message = "Błąd w powtórzeniu hasła")
+@PasswordMatches(message = "Błąd w powtórzeniu hasła", groups = {UserForm.UneditableDataValidation.class})
 public class UserForm {
 
-    @Size(min = 2, max = 20, message = "Imię musi zawierać od 2 do 20 znaków")
+    public interface EditableDataValidation {
+
+    }
+
+    public interface UneditableDataValidation {
+
+    }
+
+    @Size(min = 2, max = 20, message = "Imię musi zawierać od 2 do 20 znaków", groups = {EditableDataValidation.class})
     private String name;
 
-    @Size(min = 2, max = 30, message = "Nazwisko musi zawierać od 2 do 30 znaków")
+    @Size(min = 2, max = 30, message = "Nazwisko musi zawierać od 2 do 30 znaków", groups = {EditableDataValidation.class})
     private String surname;
 
-    @NotBlank(message = "Email jest niepoprawny")
-    @Email(message = "Email jest niepoprawny")
+    @NotBlank(message = "Email jest niepoprawny", groups = {UneditableDataValidation.class})
+    @Email(message = "Email jest niepoprawny", groups = {UneditableDataValidation.class})
     private String email;
 
-    @Size(min = 7, max = 30, message = "Hasło musi zawierać od 7 do 30 znaków")
-    @Pattern(regexp = ".*[A-Z].*", message = "Hasło musi zawierać co najmniej jedną wielką literę")
-    @Pattern(regexp = ".*[a-z].*", message = "Hasło musi zawierać co najmniej jedną małą literę")
-    @Pattern(regexp = ".*[0-9].*", message = "Hasło musi zawierać co najmniej jedną cyfrę")
+    @Size(min = 7, max = 30, message = "Hasło musi zawierać od 7 do 30 znaków",
+            groups = {UneditableDataValidation.class})
+    @Pattern(regexp = ".*[A-Z].*", message = "Hasło musi zawierać co najmniej jedną wielką literę",
+            groups = {UneditableDataValidation.class})
+    @Pattern(regexp = ".*[a-z].*", message = "Hasło musi zawierać co najmniej jedną małą literę",
+            groups = {UneditableDataValidation.class})
+    @Pattern(regexp = ".*[0-9].*", message = "Hasło musi zawierać co najmniej jedną cyfrę",
+            groups = {UneditableDataValidation.class})
     private String password;
     private String matchingPassword;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "Podaj datę z przeszłości", groups = {EditableDataValidation.class})
+    @NotNull(message = "Niepoprawna data", groups = {EditableDataValidation.class})
     private LocalDate dateOfBirth;
 
     public String getName() {

@@ -47,6 +47,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User editUser(User user, UserForm userForm) {
+        user.setName(userForm.getName());
+        user.setSurname(userForm.getSurname());
+        user.setDateOfBirth(userForm.getDateOfBirth());
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(String email) {
+        userRepository.deleteByEmail(email);
+    }
+
     private boolean emailExists(String email) {
         User user = userRepository.findByEmail(email);
         return user != null;

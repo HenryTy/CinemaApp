@@ -11,6 +11,9 @@
     <div th:if="${param.logout}">
         Zostałeś wylogowany.
     </div>
+    <div th:if="${param.deleted}">
+        Twoje konto zostało usunięte.
+    </div>
     <h1>Logowanie</h1>
     <form th:action="@{/post_login}" method="post">
         <table>

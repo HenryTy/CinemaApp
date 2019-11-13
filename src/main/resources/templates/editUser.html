@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj swoje dane</title>
+</head>
+<body>
+<div th:replace="main.html :: mainMenu">
+</div>
+<br>
+
+<h1>Edytuj swoje dane</h1>
+
+<form action="#" th:action="@{/edit-user}" th:object="${userForm}" method="post">
+    <div th:replace="register.html :: editableData">
+    </div>
+    <button type="submit">Zatwierdź</button>
+</form>
+<br>
+<a href="/profile"><button>Anuluj</button></a>
+</body>
+</html>

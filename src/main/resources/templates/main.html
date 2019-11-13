@@ -11,7 +11,7 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
         <span sec:authorize="hasRole('ROLE_USER')">
             <button>Seanse</button>
         </span>
-        <a href="/add-user" sec:authorize="hasRole('ROLE_ADMIN')"><button>Dodaj film</button></a>
+        <a href="/add-movie" sec:authorize="hasRole('ROLE_ADMIN')"><button>Dodaj film</button></a>
         <br><br>
         <form th:action="@{/out}" method="post">
             <input type="submit" value="Wyloguj się">

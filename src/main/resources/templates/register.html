@@ -8,7 +8,7 @@
     <h1>Rejestracja</h1>
 
     <form action="#" th:action="@{/register}" th:object="${userForm}" method="post">
-        <table>
+        <table th:fragment="editableData">
             <tr>
                 <td>Imię:</td>
                 <td><input type="text" th:field="*{name}"></td>
@@ -24,6 +24,8 @@
                 <td><input type="date" th:field="*{dateOfBirth}"></td>
                 <td th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Date Of Birth Error</td>
             </tr>
+        </table>
+        <table>
             <tr>
                 <td>Email:</td>
                 <td><input type="text" th:field="*{email}"></td>

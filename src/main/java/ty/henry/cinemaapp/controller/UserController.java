@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ty.henry.cinemaapp.dto.UserForm;
-import ty.henry.cinemaapp.error.UserAlreadyExistsException;
+import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.model.User;
 import ty.henry.cinemaapp.service.UserService;
 
@@ -39,7 +39,7 @@ public class UserController {
         if(!result.hasErrors()) {
             try {
                 userService.registerNewUserAccount(userForm);
-            } catch (UserAlreadyExistsException ex) {
+            } catch (EntityAlreadyExistsException ex) {
                 result.rejectValue("email", "message.userExistsError");
             }
         }

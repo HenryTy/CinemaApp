@@ -14,6 +14,10 @@ public class Hall {
     private Integer rowCount;
     private Integer seatsInRow;
 
+    public Integer getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

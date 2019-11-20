@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sale</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <h2 class="indigo-text center">Sale</h2>
+    <ul class="collection">
+        <li class="collection-item" th:each="hall : ${halls}">
+            <div class="row">
+                <div class="col s6">
+                    <span class="title" th:text="${hall.name}">Nazwa sali</span>
+                    <p>
+                        Liczba rzędów: <span th:text="${hall.rowCount}">Liczba rzędów</span> &nbsp;&nbsp;
+                        Liczba miejsc w rzędzie: <span th:text="${hall.seatsInRow}">Liczba miejsc w rzędzie</span>
+                    </p>
+                </div>
+                <div class="col s6">
+                    <form th:action="@{/hall/{id}(id=${hall.id})}" th:method="delete" class="secondary-content">
+                        <button class="btn teal" type="submit">Usuń
+                            <i class="material-icons right">delete</i>
+                        </button>
+                    </form>
+                    <form th:action="@{/edit-hall/{id}(id=${hall.id})}" th:method="get" class="secondary-content">
+                        <button class="btn teal" type="submit">Edytuj
+                            <i class="material-icons right">edit</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="center">
+    <a href="/add-hall">
+        <button class="btn teal">Utwórz nową salę
+            <i class="material-icons left">add</i>
+        </button>
+    </a>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

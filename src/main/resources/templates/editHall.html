@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj salę</title>
+</head>
+<body>
+<div th:replace="main.html :: mainMenu">
+</div>
+<br>
+<h1>Edytuj salę</h1>
+
+<form action="#" th:action="@{/edit-hall/{id}(id=${id})}" th:object="${hallForm}" method="post">
+    <div th:replace="addHall.html :: hallForm">
+    </div>
+    <button type="submit">Zatwierdź</button>
+</form>
+<br>
+<a href="/halls"><button>Anuluj</button></a>
+</body>
+</html>

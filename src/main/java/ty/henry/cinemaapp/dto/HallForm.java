@@ -2,6 +2,7 @@ package ty.henry.cinemaapp.dto;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class HallForm {
@@ -11,10 +12,12 @@ public class HallForm {
 
     @Min(value = 1, message = "Sala musi mieć co najmniej 1 rząd")
     @Max(value = 99, message = "Sala może mieć maksymalnie 99 rzędów")
+    @NotNull(message = "Podaj liczbę rzędów")
     private Integer rowCount;
 
     @Min(value = 1, message = "Rząd musi mieć co najmniej 1 miejsce")
     @Max(value = 99, message = "Rząd może mieć maksymalnie 99 miejsc")
+    @NotNull(message = "Podaj liczbę miejsc w rzędzie")
     private Integer seatsInRow;
 
     public String getName() {

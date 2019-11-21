@@ -1,11 +1,11 @@
 package ty.henry.cinemaapp.persistence;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import ty.henry.cinemaapp.model.Movie;
 
 @Repository
-public interface MovieRepository extends CrudRepository<Movie, Integer> {
+public interface MovieRepository extends PagingAndSortingRepository<Movie, Integer> {
 
     boolean existsByTitleAndProductionYear(String title, Integer productionYear);
 

@@ -4,21 +4,25 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Kino</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <div th:fragment="mainMenu">
-        <a href="/profile"><button>Profil</button></a>
+    <div class="row" th:fragment="mainMenu">
+        <a href="/profile"><button class="col s2 btn">Profil</button></a>
+        <a href="/movies"><button class="col s2 btn">Repertuar</button></a>
         <span sec:authorize="hasRole('ROLE_USER')">
-            <button>Seanse</button>
+                <button class="col s2 btn">Moje seanse</button>
         </span>
         <span sec:authorize="hasRole('ROLE_ADMIN')">
-            <a href="/add-movie"><button>Dodaj film</button></a>
-            <a href="/halls"><button>Sale</button></a>
+                <a href="/halls"><button class="col s2 btn">Sale</button></a>
         </span>
-        <br><br>
         <form th:action="@{/out}" method="post">
-            <input type="submit" value="Wyloguj się">
+            <button class="col s2 btn" type="submit">Wyloguj się</button>
         </form>
     </div>
+    <script src="/webjars/jquery/3.4.1/jquery.js"></script>
+    <script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
 </body>
 </html>

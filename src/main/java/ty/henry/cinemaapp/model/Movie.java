@@ -17,6 +17,10 @@ public class Movie {
     private String director;
     private Integer allowedFromAge;
 
+    public Integer getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

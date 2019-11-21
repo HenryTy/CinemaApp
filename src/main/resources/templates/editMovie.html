@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj dane filmu</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center">Edytuj dane filmu</h2>
+    <form th:action="@{/edit-movie/{id}(id=${id})}" method="post" th:object="${movieForm}" class="col m8 s12 offset-m2">
+        <div th:replace="addMovie.html :: movieForm">
+        </div>
+        <div class="row s12">
+            <div class="col s6">
+                <button class="btn waves-effect waves-light" type="submit">Zatwierdź
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+            <div class="col s6">
+                <a href="/movies">
+                    <button class="btn waves-effect waves-light secondary-content" type="button">Anuluj
+                        <i class="material-icons right">cancel</i>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

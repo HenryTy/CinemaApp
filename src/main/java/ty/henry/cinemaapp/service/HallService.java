@@ -1,6 +1,7 @@
 package ty.henry.cinemaapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ty.henry.cinemaapp.dto.HallForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
@@ -15,7 +16,7 @@ public class HallService {
     private HallRepository hallRepository;
 
     public Iterable<Hall> findAllHalls() {
-        return hallRepository.findAll();
+        return hallRepository.findAll(Sort.by("name"));
     }
 
     public Hall findHallById(Integer id) throws EntityNotExistException {

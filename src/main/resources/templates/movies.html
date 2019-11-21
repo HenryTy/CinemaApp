@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Repertuar</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center">Repertuar</h2>
+    <ul class="collection">
+        <li class="collection-item" th:each="movie : ${movies}">
+            <div class="row">
+                <div class="col s6">
+                    <span class="title" th:text="${movie.title}">Tytuł filmu</span>
+                </div>
+                <div class="col s6">
+                    <form th:action="@{/movie/{id}(id=${movie.id})}" th:method="get" class="secondary-content">
+                        <button class="btn teal" type="submit">Szczegóły
+                            <i class="material-icons right">description</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="center">
+    <a href="/add-movie">
+        <button class="btn teal">Dodaj film
+            <i class="material-icons left">add</i>
+        </button>
+    </a>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

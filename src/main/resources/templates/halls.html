@@ -9,6 +9,9 @@
 </head>
 <body>
 <div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
     <h2 class="indigo-text center">Sale</h2>
     <ul class="collection">
         <li class="collection-item" th:each="hall : ${halls}">

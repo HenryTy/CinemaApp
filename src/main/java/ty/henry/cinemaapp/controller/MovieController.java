@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ty.henry.cinemaapp.dto.MovieForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.model.Movie;
 import ty.henry.cinemaapp.service.MovieService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -22,10 +21,18 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping("/movies")
-    public String showMovies(Model model) {
-        Iterable<Movie> movies = movieService.findAllMovies();
+    public String showMovies(Model model, @RequestParam(defaultValue = "") String search) {
+        Iterable<Movie> movies = movieService.findMovies(search);
         model.addAttribute("movies", movies);
+        model.addAttribute("search", search);
         return "movies";
+    }
+
+    @PostMapping("/search-movies")
+    public String searchMovies(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String search = request.getParameter("search");
+        redirectAttributes.addAttribute("search", search);
+        return "redirect:/movies";
     }
 
     @GetMapping("/add-movie")

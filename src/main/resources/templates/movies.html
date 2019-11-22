@@ -13,6 +13,17 @@
     </div>
 
     <h2 class="indigo-text center">Repertuar</h2>
+
+    <form th:action="@{/search-movies}" method="post" class="col s12">
+        <div class="row center">
+            <div class="input-field col s6 offset-s3">
+                <i class="material-icons prefix">search</i>
+                <input id="search" name="search" type="text" class="validate" th:value="${search}"/>
+                <label for="search">Wpisz szukany tytuł</label>
+            </div>
+        </div>
+    </form>
+
     <ul class="collection">
         <li class="collection-item" th:each="movie : ${movies}">
             <div class="row">

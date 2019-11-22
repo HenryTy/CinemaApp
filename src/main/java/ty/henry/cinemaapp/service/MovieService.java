@@ -14,8 +14,13 @@ public class MovieService {
     @Autowired
     private MovieRepository movieRepository;
 
-    public Iterable<Movie> findAllMovies() {
-        return movieRepository.findAll();
+    public Iterable<Movie> findMovies(String search) {
+        if(search.equals("")) {
+            return movieRepository.findAll();
+        }
+        else {
+            return movieRepository.findAllByTitleContainsIgnoreCase(search);
+        }
     }
 
     public Movie findMovieById(Integer id) throws EntityNotExistException {

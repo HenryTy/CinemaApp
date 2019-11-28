@@ -1,9 +1,10 @@
 package ty.henry.cinemaapp.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-public class Hall {
+public class Hall implements Comparable<Hall> {
 
     @SequenceGenerator(name = "SEQ_HALL", sequenceName = "SEQ_HALL")
     @Id
@@ -40,5 +41,27 @@ public class Hall {
 
     public void setSeatsInRow(Integer seatsInRow) {
         this.seatsInRow = seatsInRow;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(this == other) {
+            return true;
+        }
+        if(other == null || other.getClass() != getClass()) {
+            return false;
+        }
+        Hall otherHall = (Hall) other;
+        return Objects.equals(name, otherHall.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public int compareTo(Hall other) {
+        return name.compareTo(other.name);
     }
 }

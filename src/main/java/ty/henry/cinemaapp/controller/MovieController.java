@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ty.henry.cinemaapp.dto.MovieForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
+import ty.henry.cinemaapp.logic.ShowingDateClassifier;
 import ty.henry.cinemaapp.model.Movie;
 import ty.henry.cinemaapp.service.MovieService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.format.DateTimeFormatter;
 
 @Controller
 public class MovieController {
@@ -33,6 +35,17 @@ public class MovieController {
         String search = request.getParameter("search");
         redirectAttributes.addAttribute("search", search);
         return "redirect:/movies";
+    }
+
+    @GetMapping("/movie/{id}")
+    public String showMoviePage(@PathVariable Integer id, Model model) {
+        Movie movie = movieService.findMovieById(id);
+        ShowingDateClassifier classifier = new ShowingDateClassifier(movie.getShowings());
+        model.addAttribute("movie", movie);
+        model.addAttribute("classifier", classifier);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        model.addAttribute("dateFormatter", formatter);
+        return "movie";
     }
 
     @GetMapping("/add-movie")
@@ -79,10 +92,10 @@ public class MovieController {
         if(result.hasErrors()) {
             return "editMovie";
         }
-        return "redirect:/movies";
+        return "redirect:/movie/{id}";
     }
 
-    @DeleteMapping("/movie/{id}")
+    @DeleteMapping("/delete-movie/{id}")
     public String deleteMovie(@PathVariable Integer id) {
         movieService.deleteMovie(id);
         return "redirect:/movies";

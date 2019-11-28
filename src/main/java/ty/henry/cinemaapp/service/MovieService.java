@@ -52,6 +52,10 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
+    public void addShowing() {
+        
+    }
+
     private void fillMovieWithFormData(Movie movie, MovieForm movieForm) {
         movie.setTitle(movieForm.getTitle());
         movie.setProductionYear(movieForm.getProductionYear());

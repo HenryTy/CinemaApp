@@ -1,6 +1,9 @@
 package ty.henry.cinemaapp.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Movie {
@@ -16,6 +19,9 @@ public class Movie {
     private String genre;
     private String director;
     private Integer allowedFromAge;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    private List<Showing> showings;
 
     public Integer getId() {
         return id;
@@ -45,6 +51,19 @@ public class Movie {
         return allowedFromAge;
     }
 
+    public List<Showing> getShowings() {
+        return showings;
+    }
+
+    public void addShowing(Hall hall, LocalDateTime showingDate) {
+        Showing showing = new Showing(this, hall, showingDate);
+        showings.add(showing);
+    }
+
+    public void removeShowing(Showing showing) {
+        showings.remove(showing);
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -67,5 +86,23 @@ public class Movie {
 
     public void setAllowedFromAge(Integer allowedFromAge) {
         this.allowedFromAge = allowedFromAge;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if(this == other) {
+            return true;
+        }
+        if(other == null || other.getClass() != getClass()) {
+            return false;
+        }
+        Movie otherMovie = (Movie) other;
+        return Objects.equals(title, otherMovie.title)
+                && Objects.equals(productionYear, otherMovie.productionYear);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, productionYear);
     }
 }

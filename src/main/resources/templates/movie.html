@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${movie.title}">Film</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center" th:text="${movie.title}">Film</h2>
+    <div class="col m8 s12 offset-m2">
+        <div class="row">
+            <div class="col s6">
+                <h3 class="indigo-text">Informacje o filmie</h3>
+                <p class="collection-item">
+                    Rok produkcji: <span th:text="${movie.productionYear}">Rok produkcji</span>
+                    <br>
+                    Długość: <span th:text="${movie.lengthMinutes}">Długość</span>&nbsp;&nbsp;min
+                    <br>
+                    Gatunek: <span th:text="${movie.genre}">Gatunek</span>
+                    <br>
+                    <span th:if="${movie.director != null}">
+                        Reżyser: <span th:text="${movie.director}">Reżyser</span>
+                        <br>
+                    </span>
+                    <span th:if="${movie.allowedFromAge != null}">Dozwolony od lat: <span th:text="${movie.allowedFromAge}">Dozwolony od lat</span>
+                    <br>
+                    </span>
+                </p>
+                <form th:action="@{/edit-movie/{id}(id=${movie.id})}" th:method="get">
+                    <button class="btn teal" type="submit">Edytuj dane
+                        <i class="material-icons right">edit</i>
+                    </button>
+                </form>
+                <br>
+                <form th:action="@{/delete-movie/{id}(id=${movie.id})}" th:method="delete">
+                    <button class="btn teal" type="submit">Usuń film
+                        <i class="material-icons right">delete</i>
+                    </button>
+                </form>
+            </div>
+            <div class="col s6">
+                <h3 class="indigo-text">Seanse</h3>
+                <ul class="collection">
+                    <li class="collection-item" th:each="date : ${classifier.getDates()}">
+                        <div class="row">
+                            <span class="title" th:text="${dateFormatter.format(date)}">Data seansu</span>
+                            <p>
+                                <span th:each="showing: ${classifier.getShowingsByDate(date)}"
+                                      th:text="${showing.getShowingDate().toLocalTime()} + ' '"></span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

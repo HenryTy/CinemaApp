@@ -66,4 +66,15 @@ public class ShowingTimeChecker {
             timeRanges.add(resultRange);
         }
     }
+
+    public boolean isTimeInRanges(Hall chosenHall, LocalDateTime chosenTime,
+                                  Map<Hall, List<TimeRange>> possibleTimeRanges) {
+        List<TimeRange> possibleRangesInChosenHall = possibleTimeRanges.get(chosenHall);
+        for(TimeRange range : possibleRangesInChosenHall) {
+            if(range.isTimeInRange(chosenTime)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

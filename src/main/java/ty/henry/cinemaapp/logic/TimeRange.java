@@ -29,4 +29,8 @@ public class TimeRange {
     public long getLengthMinutes() {
         return startTime.until(endTime, ChronoUnit.MINUTES);
     }
+
+    public boolean isTimeInRange(LocalDateTime timeToCheck) {
+        return startTime.compareTo(timeToCheck) <= 0 && endTime.compareTo(timeToCheck) >= 0;
+    }
 }

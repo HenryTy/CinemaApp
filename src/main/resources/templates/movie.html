@@ -57,6 +57,11 @@
                         </div>
                     </li>
                 </ul>
+                <form th:action="@{/add-showing/{id}(id=${movie.id})}" th:method="get">
+                    <button class="btn teal" type="submit">Dodaj seans
+                        <i class="material-icons right">add</i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

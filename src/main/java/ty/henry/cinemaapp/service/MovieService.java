@@ -3,16 +3,26 @@ package ty.henry.cinemaapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ty.henry.cinemaapp.dto.MovieForm;
+import ty.henry.cinemaapp.dto.ShowingForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.error.EntityNotExistException;
+import ty.henry.cinemaapp.model.Hall;
 import ty.henry.cinemaapp.model.Movie;
+import ty.henry.cinemaapp.model.Showing;
 import ty.henry.cinemaapp.persistence.MovieRepository;
+import ty.henry.cinemaapp.persistence.ShowingRepository;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 public class MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private ShowingRepository showingRepository;
 
     public Iterable<Movie> findMovies(String search) {
         if(search.equals("")) {
@@ -52,8 +62,13 @@ public class MovieService {
         movieRepository.deleteById(id);
     }
 
-    public void addShowing() {
-        
+    public void addShowing(ShowingForm showingForm) {
+        Movie movie = showingForm.getMovie();
+        Hall hall = showingForm.getHall();
+        LocalDate date = showingForm.getDate();
+        LocalTime time = showingForm.getTime();
+        Showing showing = new Showing(movie, hall, date.atTime(time));
+        showingRepository.save(showing);
     }
 
     private void fillMovieWithFormData(Movie movie, MovieForm movieForm) {

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj seans</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center">Dodaj seans</h2>
+    <form th:action="@{/add-showing/{movieId}(movieId=${showingForm.movie.id}, _step=1)}" method="post" th:object="${showingForm}" class="col m8 s12 offset-m2">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input th:field="${showingForm.date}" id="date" type="date" th:errorclass="invalid"/>
+                    <label for="date">Data seansu</label>
+                    <div th:errors="${showingForm.date}" class="red-text">Błąd</div>
+                </div>
+                <div class="col s6 secondary-content">
+                    <button class="btn waves-effect waves-light" type="submit">Zatwierdź datę
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+    </form>
+
+    <div th:if="${ranges != null}">
+        <form th:action="@{/add-showing/{movieId}(movieId=${showingForm.movie.id}, _finish=true)}" method="post" th:object="${showingForm}" class="col m8 s12 offset-m2">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input th:field="${showingForm.time}" id="time" type="time" th:errorclass="invalid"/>
+                    <label for="time">Godzina seansu</label>
+                    <div th:errors="${showingForm.time}" class="red-text">Błąd</div>
+                </div>
+                <div class="input-field col s6">
+                    <select th:field="${showingForm.hallName}" id="hall">
+                        <option th:each="hall : ${ranges.keySet()}" th:value="${hall.name}" th:text="${hall.name}">
+                        </option>
+                    </select>
+                    <label for="hall">Sala</label>
+                </div>
+            </div>
+            <div class="row s12">
+                <div class="col s6">
+                    <button class="btn waves-effect waves-light" type="submit">Dodaj seans
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+                <div class="col s6">
+                    <a th:href="@{/add-showing/{movieId}(movieId=${showingForm.movie.id}, _cancel=true)}" th:method="post">
+                        <button class="btn waves-effect waves-light secondary-content" type="button">Anuluj
+                            <i class="material-icons right">cancel</i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <div class="col m8 s12 offset-m2">
+            <h4 class="indigo-text center">Dostępne sale i godziny rozpoczęcia seansu:</h4>
+            <ul class="collection">
+                <li class="collection-item" th:each="hall : ${ranges.keySet()}">
+                    <div class="row">
+                        <h6 class="indigo-text" th:text="${hall.name}">Nazwa sali</h6>
+                        <p>
+                            <span th:each="range: ${ranges.get(hall)}"
+                                  th:text="${range.startTime.toLocalTime()} + '-' + ${range.endTime.toLocalTime()} + ' '"></span>
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
+</body>
+</html>

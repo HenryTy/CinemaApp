@@ -7,7 +7,7 @@ import java.util.Objects;
 @Entity
 public class Showing implements Comparable<Showing> {
 
-    @SequenceGenerator(name = "SEQ_SHOWING", sequenceName = "SEQ_SHOWING")
+    @SequenceGenerator(name = "SEQ_SHOWING", sequenceName = "SEQ_SHOWING", allocationSize = 1)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SHOWING")
     private Long id;
@@ -30,6 +30,10 @@ public class Showing implements Comparable<Showing> {
         this.showingDate = showingDate;
         this.movie = movie;
         this.hall = hall;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public LocalDateTime getShowingDate() {

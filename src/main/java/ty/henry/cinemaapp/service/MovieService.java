@@ -1,6 +1,7 @@
 package ty.henry.cinemaapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ty.henry.cinemaapp.dto.MovieForm;
 import ty.henry.cinemaapp.dto.ShowingForm;
@@ -13,7 +14,9 @@ import ty.henry.cinemaapp.persistence.MovieRepository;
 import ty.henry.cinemaapp.persistence.ShowingRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class MovieService {
@@ -69,6 +72,18 @@ public class MovieService {
         LocalTime time = showingForm.getTime();
         Showing showing = new Showing(movie, hall, date.atTime(time));
         showingRepository.save(showing);
+    }
+
+    public List<Showing> findAllShowingsForMovie(Movie movie) {
+        return showingRepository.findAllByMovie(movie, Sort.by("showingDate"));
+    }
+
+    public List<Showing> findFutureShowingsForMovie(Movie movie) {
+        return showingRepository.findAllByMovieAndShowingDateAfter(movie, LocalDateTime.now(), Sort.by("showingDate"));
+    }
+
+    public List<Showing> findAllFutureShowings() {
+        return showingRepository.findAllByShowingDateAfter(LocalDateTime.now(), Sort.by("showingDate"));
     }
 
     private void fillMovieWithFormData(Movie movie, MovieForm movieForm) {

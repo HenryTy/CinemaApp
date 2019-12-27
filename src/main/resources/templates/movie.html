@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
 <head>
     <meta charset="UTF-8">
     <title th:text="${movie.title}">Film</title>
@@ -32,13 +33,13 @@
                     <br>
                     </span>
                 </p>
-                <form th:action="@{/edit-movie/{id}(id=${movie.id})}" th:method="get">
+                <form th:action="@{/edit-movie/{id}(id=${movie.id})}" th:method="get" sec:authorize="hasRole('ROLE_ADMIN')">
                     <button class="btn teal" type="submit">Edytuj dane
                         <i class="material-icons right">edit</i>
                     </button>
                 </form>
                 <br>
-                <form th:action="@{/delete-movie/{id}(id=${movie.id})}" th:method="delete">
+                <form th:action="@{/delete-movie/{id}(id=${movie.id})}" th:method="delete" sec:authorize="hasRole('ROLE_ADMIN')">
                     <button class="btn teal" type="submit">Usuń film
                         <i class="material-icons right">delete</i>
                     </button>
@@ -51,13 +52,15 @@
                         <div class="row">
                             <span class="title" th:text="${dateFormatter.format(date)}">Data seansu</span>
                             <p>
-                                <span th:each="showing: ${classifier.getShowingsByDate(date)}"
-                                      th:text="${showing.getShowingDate().toLocalTime()} + ' '"></span>
+                                <a th:each="showing: ${classifier.getShowingsByDate(date)}"
+                                    th:href="@{/showing/{id}(id=${showing.id})}">
+                                    <span th:text="${showing.getShowingDate().toLocalTime()} + ' '"></span>
+                                </a>
                             </p>
                         </div>
                     </li>
                 </ul>
-                <form th:action="@{/add-showing/{id}(id=${movie.id})}" th:method="get">
+                <form th:action="@{/add-showing/{id}(id=${movie.id})}" th:method="get" sec:authorize="hasRole('ROLE_ADMIN')">
                     <button class="btn teal" type="submit">Dodaj seans
                         <i class="material-icons right">add</i>
                     </button>

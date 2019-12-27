@@ -3,27 +3,21 @@ package ty.henry.cinemaapp.logic;
 import ty.henry.cinemaapp.model.Showing;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import static java.util.stream.Collectors.*;
+import java.util.*;
 
 public class ShowingDateClassifier {
 
-    private Map<LocalDate, List<Showing>> dateToShowings;
+    private ShowingClassifier<LocalDate> classifier;
 
     public ShowingDateClassifier(Collection<Showing> showings) {
-        dateToShowings = showings.stream().collect(groupingBy(showing -> showing.getShowingDate().toLocalDate(),
-                TreeMap::new, toList()));
+        classifier = new ShowingClassifier<>(showings, ShowingClassifier.BY_DATE_CLASSIFICATION_FUNCTION);
     }
 
     public Collection<LocalDate> getDates() {
-        return dateToShowings.keySet();
+        return classifier.getKeys();
     }
 
-    public Collection<Showing> getShowingsByDate(LocalDate date) {
-        return dateToShowings.get(date);
+    public List<Showing> getShowingsByDate(LocalDate date) {
+        return classifier.getShowingsByKey(date);
     }
 }

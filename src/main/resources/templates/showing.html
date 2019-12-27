@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${chosenShowing.movie.title}">Film</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center" th:text="${chosenShowing.movie.title}">Film</h2>
+    <h5 class="indigo-text center" th:text="${chosenShowing.showingDate.toLocalDate()}">Data</h5>
+    <div class="col m8 s12 offset-m2">
+        <form th:action="@{/buy-ticket}" method="post" th:object="${selectShowingForm}">
+            <div class="row">
+                <div class="input-field col s6 offset-s3">
+                    <select id="selectedShowing" name="selectedShowing">
+                        <option th:each="showing : ${showings}" th:value="${showing.id}"
+                                th:text="${showing.showingDate.toLocalTime() + ' (' + showing.hall.name + ')'}"
+                                th:selected="${chosenShowing.id == showing.id}">
+                        </option>
+                    </select>
+                    <label for="selectedShowing">Seans</label>
+                </div>
+            </div>
+            <div class="row" sec:authorize="hasRole('ROLE_USER')">
+                <div class="col s6 offset-s3">
+                    <button class="btn waves-effect waves-light" type="submit">Kup bilet
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
+</body>
+</html>

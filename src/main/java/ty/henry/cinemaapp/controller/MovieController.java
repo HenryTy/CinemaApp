@@ -8,13 +8,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ty.henry.cinemaapp.dto.MovieForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
+import ty.henry.cinemaapp.logic.ShowingClassifier;
 import ty.henry.cinemaapp.logic.ShowingDateClassifier;
+import ty.henry.cinemaapp.logic.TwoLevelShowingClassifier;
 import ty.henry.cinemaapp.model.Movie;
+import ty.henry.cinemaapp.model.Role;
+import ty.henry.cinemaapp.model.Showing;
+import ty.henry.cinemaapp.model.User;
 import ty.henry.cinemaapp.service.MovieService;
+import ty.henry.cinemaapp.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller
 public class MovieController {
@@ -22,11 +31,21 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/movies")
     public String showMovies(Model model, @RequestParam(defaultValue = "") String search) {
         Iterable<Movie> movies = movieService.findMovies(search);
         model.addAttribute("movies", movies);
         model.addAttribute("search", search);
+
+        List<Showing> futureShowings = movieService.findAllFutureShowings();
+        TwoLevelShowingClassifier<Movie, LocalDate> movieDateShowingClassifier =
+                new TwoLevelShowingClassifier<>(futureShowings, ShowingClassifier.BY_MOVIE_CLASSIFICATION_FUNCTION,
+                        ShowingClassifier.BY_DATE_CLASSIFICATION_FUNCTION,
+                        null, null);
+        model.addAttribute("movieDateShowingClassifier", movieDateShowingClassifier);
         return "movies";
     }
 
@@ -38,9 +57,18 @@ public class MovieController {
     }
 
     @GetMapping("/movie/{id}")
-    public String showMoviePage(@PathVariable Integer id, Model model) {
+    public String showMoviePage(@PathVariable Integer id, Model model, Principal principal) {
+        User currentUser = userService.findUserByEmail(principal.getName());
         Movie movie = movieService.findMovieById(id);
-        ShowingDateClassifier classifier = new ShowingDateClassifier(movie.getShowings());
+        List<Showing> showingsToClassify;
+
+        if(currentUser.getRole() == Role.ROLE_ADMIN) {
+            showingsToClassify = movieService.findAllShowingsForMovie(movie);
+        }
+        else {
+            showingsToClassify = movieService.findFutureShowingsForMovie(movie);
+        }
+        ShowingDateClassifier classifier = new ShowingDateClassifier(showingsToClassify);
         model.addAttribute("movie", movie);
         model.addAttribute("classifier", classifier);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");

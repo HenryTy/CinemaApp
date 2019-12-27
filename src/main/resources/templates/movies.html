@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Repertuar</title>
@@ -24,24 +25,40 @@
         </div>
     </form>
 
-    <ul class="collection">
-        <li class="collection-item" th:each="movie : ${movies}">
-            <div class="row">
-                <div class="col s6">
-                    <span class="title" th:text="${movie.title}">Tytuł filmu</span>
+    <div class="col m8 s12 offset-m2">
+        <ul class="collection">
+            <li class="collection-item" th:each="movie : ${movies}">
+                <div class="row">
+                    <div class="col s4">
+                        <h5 class="indigo-text" th:text="${movie.title} + '(' + ${movie.productionYear} + ')'">Tytuł filmu</h5>
+                        <p>
+                            <span th:text="${movie.genre} + ', '">Gatunek</span>
+                            <span th:text="${movie.lengthMinutes} + 'min'">Długość filmu</span>
+                        </p>
+                    </div>
+                    <div class="col s4" th:with="byDateClassifier=${movieDateShowingClassifier.getSecondLevelClassifier(movie)}">
+                        <div th:if="${byDateClassifier}">
+                            <h5 class="indigo-text">Najbliższe seanse:</h5>
+                            <p th:each="date : ${byDateClassifier.getFirstNKeys(3)}">
+                                <a th:href="@{/showing/{id}(id=${byDateClassifier.getShowingsByKey(date).get(0).id})}">
+                                    <span th:text="${date}">Data seansu</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <form th:action="@{/movie/{id}(id=${movie.id})}" th:method="get" class="secondary-content center">
+                            <button class="btn teal" type="submit">Szczegóły
+                                <i class="material-icons right">description</i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="col s6">
-                    <form th:action="@{/movie/{id}(id=${movie.id})}" th:method="get" class="secondary-content">
-                        <button class="btn teal" type="submit">Szczegóły
-                            <i class="material-icons right">description</i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </li>
-    </ul>
+            </li>
+        </ul>
+    </div>
 </div>
-<div class="center">
+<div class="center" sec:authorize="hasRole('ROLE_ADMIN')">
     <a href="/add-movie">
         <button class="btn teal">Dodaj film
             <i class="material-icons left">add</i>

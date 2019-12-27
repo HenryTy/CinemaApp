@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Movie {
+public class Movie implements Comparable<Movie> {
 
     @SequenceGenerator(name = "SEQ_MOVIE", sequenceName = "SEQ_MOVIE")
     @Id
@@ -104,5 +104,11 @@ public class Movie {
     @Override
     public int hashCode() {
         return Objects.hash(title, productionYear);
+    }
+
+    @Override
+    public int compareTo(Movie other) {
+        int compareTitle = title.compareTo(other.title);
+        return compareTitle == 0 ? productionYear.compareTo(other.productionYear) : compareTitle;
     }
 }

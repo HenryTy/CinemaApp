@@ -2,6 +2,7 @@ package ty.henry.cinemaapp.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,6 +22,9 @@ public class Showing implements Comparable<Showing> {
     @ManyToOne
     @JoinColumn(name = "hallId", nullable = false)
     private Hall hall;
+
+    @OneToMany(mappedBy = "showing", cascade = CascadeType.ALL)
+    private List<Ticket> tickets;
 
     private Showing() {
 
@@ -46,6 +50,10 @@ public class Showing implements Comparable<Showing> {
 
     public Hall getHall() {
         return hall;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 
     public void setShowingDate(LocalDateTime showingDate) {

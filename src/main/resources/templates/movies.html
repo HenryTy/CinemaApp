@@ -32,7 +32,7 @@
                     <div class="col s4">
                         <h5 class="indigo-text" th:text="${movie.title} + '(' + ${movie.productionYear} + ')'">Tytuł filmu</h5>
                         <p>
-                            <span th:text="${movie.genre} + ', '">Gatunek</span>
+                            <span th:text="${movie.genre.getDisplayName()} + ', '">Gatunek</span>
                             <span th:text="${movie.lengthMinutes} + 'min'">Długość filmu</span>
                         </p>
                     </div>

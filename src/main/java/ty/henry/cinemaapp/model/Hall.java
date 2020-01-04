@@ -6,9 +6,10 @@ import java.util.Objects;
 @Entity
 public class Hall implements Comparable<Hall> {
 
-    @SequenceGenerator(name = "SEQ_HALL", sequenceName = "SEQ_HALL")
+    @SequenceGenerator(name = "SEQ_HALL", sequenceName = "SEQ_HALL", allocationSize = 1)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_HALL")
+    @Column(name = "hall_id")
     private Integer id;
 
     private String name;

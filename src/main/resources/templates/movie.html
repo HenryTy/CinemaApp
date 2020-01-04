@@ -23,7 +23,7 @@
                     <br>
                     Długość: <span th:text="${movie.lengthMinutes}">Długość</span>&nbsp;&nbsp;min
                     <br>
-                    Gatunek: <span th:text="${movie.genre}">Gatunek</span>
+                    Gatunek: <span th:text="${movie.genre.getDisplayName()}">Gatunek</span>
                     <br>
                     <span th:if="${movie.director != null}">
                         Reżyser: <span th:text="${movie.director}">Reżyser</span>

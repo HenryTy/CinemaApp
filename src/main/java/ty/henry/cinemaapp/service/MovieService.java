@@ -9,6 +9,7 @@ import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.error.EntityNotExistException;
 import ty.henry.cinemaapp.model.Hall;
 import ty.henry.cinemaapp.model.Movie;
+import ty.henry.cinemaapp.model.MovieGenre;
 import ty.henry.cinemaapp.model.Showing;
 import ty.henry.cinemaapp.persistence.MovieRepository;
 import ty.henry.cinemaapp.persistence.ShowingRepository;
@@ -90,7 +91,7 @@ public class MovieService {
         movie.setTitle(movieForm.getTitle());
         movie.setProductionYear(movieForm.getProductionYear());
         movie.setLengthMinutes(movieForm.getLengthMinutes());
-        movie.setGenre(movieForm.getGenre());
+        movie.setGenre(MovieGenre.valueOf(movieForm.getGenre()));
         movie.setDirector(movieForm.getDirector());
         movie.setAllowedFromAge(movieForm.getAllowedFromAge());
     }

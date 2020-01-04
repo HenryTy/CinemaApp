@@ -8,15 +8,19 @@ import java.util.Objects;
 @Entity
 public class Movie implements Comparable<Movie> {
 
-    @SequenceGenerator(name = "SEQ_MOVIE", sequenceName = "SEQ_MOVIE")
+    @SequenceGenerator(name = "SEQ_MOVIE", sequenceName = "SEQ_MOVIE", allocationSize = 1)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_MOVIE")
+    @Column(name = "movie_id")
     private Integer id;
 
     private String title;
     private Integer productionYear;
     private Integer lengthMinutes;
-    private String genre;
+
+    @Enumerated(EnumType.STRING)
+    private MovieGenre genre;
+
     private String director;
     private Integer allowedFromAge;
 
@@ -39,7 +43,7 @@ public class Movie implements Comparable<Movie> {
         return lengthMinutes;
     }
 
-    public String getGenre() {
+    public MovieGenre getGenre() {
         return genre;
     }
 
@@ -76,7 +80,7 @@ public class Movie implements Comparable<Movie> {
         this.lengthMinutes = lengthMinutes;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(MovieGenre genre) {
         this.genre = genre;
     }
 

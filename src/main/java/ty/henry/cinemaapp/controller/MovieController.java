@@ -11,10 +11,7 @@ import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.logic.ShowingClassifier;
 import ty.henry.cinemaapp.logic.ShowingDateClassifier;
 import ty.henry.cinemaapp.logic.TwoLevelShowingClassifier;
-import ty.henry.cinemaapp.model.Movie;
-import ty.henry.cinemaapp.model.Role;
-import ty.henry.cinemaapp.model.Showing;
-import ty.henry.cinemaapp.model.User;
+import ty.henry.cinemaapp.model.*;
 import ty.henry.cinemaapp.service.MovieService;
 import ty.henry.cinemaapp.service.UserService;
 
@@ -77,7 +74,9 @@ public class MovieController {
     }
 
     @GetMapping("/add-movie")
-    public String showAddMoviePage(MovieForm movieForm) {
+    public String showAddMoviePage(MovieForm movieForm, Model model) {
+        model.addAttribute("genres", MovieGenre.values());
+        movieForm.setGenre(MovieGenre.ACTION.name());
         return "addMovie";
     }
 
@@ -97,12 +96,13 @@ public class MovieController {
     }
 
     @GetMapping("/edit-movie/{id}")
-    public String showEditMoviePage(MovieForm movieForm, @PathVariable Integer id) {
+    public String showEditMoviePage(MovieForm movieForm, @PathVariable Integer id, Model model) {
+        model.addAttribute("genres", MovieGenre.values());
         Movie movie = movieService.findMovieById(id);
         movieForm.setTitle(movie.getTitle());
         movieForm.setProductionYear(movie.getProductionYear());
         movieForm.setLengthMinutes(movie.getLengthMinutes());
-        movieForm.setGenre(movie.getGenre());
+        movieForm.setGenre(movie.getGenre().name());
         movieForm.setDirector(movie.getDirector());
         movieForm.setAllowedFromAge(movie.getAllowedFromAge());
         return "editMovie";

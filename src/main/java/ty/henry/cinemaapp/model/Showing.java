@@ -11,6 +11,7 @@ public class Showing implements Comparable<Showing> {
     @SequenceGenerator(name = "SEQ_SHOWING", sequenceName = "SEQ_SHOWING", allocationSize = 1)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_SHOWING")
+    @Column(name = "showing_id")
     private Long id;
 
     private LocalDateTime showingDate;

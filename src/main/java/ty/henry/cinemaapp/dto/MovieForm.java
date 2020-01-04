@@ -20,7 +20,6 @@ public class MovieForm {
     @NotNull(message = "Podaj długość filmu")
     private Integer lengthMinutes;
 
-    @Size(min = 1, max = 50, message = "Gatunek musi zawierać od 1 do 50 znaków")
     private String genre;
 
     @Size(max = 50, message = "Imię i nazwisko reżysera może zawierać maksymalnie 50 znaków")

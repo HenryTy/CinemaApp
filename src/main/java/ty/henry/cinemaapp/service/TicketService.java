@@ -1,15 +1,25 @@
 package ty.henry.cinemaapp.service;
 
+import oracle.jdbc.OracleConnection;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ty.henry.cinemaapp.dto.TicketForm;
 import ty.henry.cinemaapp.error.EntityNotExistException;
 import ty.henry.cinemaapp.model.Movie;
+import ty.henry.cinemaapp.model.Reservation;
 import ty.henry.cinemaapp.model.Showing;
+import ty.henry.cinemaapp.model.Ticket;
 import ty.henry.cinemaapp.persistence.ShowingRepository;
+import ty.henry.cinemaapp.persistence.TicketRepository;
 
+import java.sql.Array;
+import java.sql.CallableStatement;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +27,9 @@ public class TicketService {
 
     @Autowired
     private ShowingRepository showingRepository;
+
+    @Autowired
+    private TicketRepository ticketRepository;
 
     public List<Showing> findShowingsForMovieAndDate(Movie movie, LocalDate date) {
         LocalDateTime from = date.atStartOfDay();
@@ -37,5 +50,52 @@ public class TicketService {
 
     public Showing findShowingById(Long id) {
         return showingRepository.findById(id).orElseThrow(EntityNotExistException::new);
+    }
+
+    public List<Reservation> findReservationsForShowing(Showing showing) {
+        List<Ticket> showingTickets = ticketRepository.findAllByShowing(showing);
+        List<Reservation> showingReservations = new ArrayList<>();
+
+        for(Ticket t : showingTickets) {
+            showingReservations.addAll(t.getReservations());
+        }
+
+        return showingReservations;
+    }
+
+    public void buyTicket(TicketForm ticketForm) {
+        List<int[]> clickedSeats = ticketForm.getClickedSeats();
+
+        int[] rows = new int[clickedSeats.size()];
+        int[] seats = new int[clickedSeats.size()];
+
+        for(int i = 0; i < clickedSeats.size(); i++) {
+            rows[i] = clickedSeats.get(i)[0];
+            seats[i] = clickedSeats.get(i)[1];
+        }
+
+        Session session = ticketRepository.getHibernateSession();
+
+        session.doWork( connection -> {
+            try (CallableStatement function = connection
+                    .prepareCall(
+                            "{ ? = call add_ticket(?, ?, ?, ?) }"
+                    )
+            ) {
+                function.registerOutParameter(1, Types.VARCHAR);
+                function.setLong( 2, ticketForm.getShowingId());
+                function.setInt(3, ticketForm.getUserId());
+
+                OracleConnection oracleConnection = connection.unwrap(OracleConnection.class);
+                Array rowsArray = oracleConnection.createOracleArray("NUMBER_ARRAY", rows);
+                Array seatsArray = oracleConnection.createOracleArray("NUMBER_ARRAY", seats);
+
+                function.setArray(4, rowsArray);
+                function.setArray(5, seatsArray);
+
+                function.execute();
+                System.out.println(function.getString(1));
+            }
+        } );
     }
 }

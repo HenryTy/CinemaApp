@@ -3,12 +3,9 @@ package ty.henry.cinemaapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import ty.henry.cinemaapp.model.Role;
-import ty.henry.cinemaapp.model.Showing;
-import ty.henry.cinemaapp.model.User;
+import org.springframework.web.bind.annotation.*;
+import ty.henry.cinemaapp.dto.TicketForm;
+import ty.henry.cinemaapp.model.*;
 import ty.henry.cinemaapp.service.TicketService;
 import ty.henry.cinemaapp.service.UserService;
 
@@ -16,6 +13,7 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
+@SessionAttributes({"ticketForm", "showing"})
 public class TicketController {
 
     @Autowired
@@ -47,9 +45,32 @@ public class TicketController {
     }
 
     @PostMapping("/buy-ticket")
-    public String showBuyTicketPage(SelectShowingForm selectShowingForm, Model model) {
+    public String showBuyTicketPage(SelectShowingForm selectShowingForm, Model model,
+                                    Principal principal) {
         Showing showing = ticketService.findShowingById(selectShowingForm.getSelectedShowing());
         model.addAttribute("showing", showing);
+
+        User currentUser = userService.findUserByEmail(principal.getName());
+        Hall showingHall = showing.getHall();
+
+        TicketForm ticketForm = new TicketForm(showingHall.getRowCount(), showingHall.getSeatsInRow());
+        ticketForm.setShowingId(showing.getId());
+        ticketForm.setUserId(currentUser.getId());
+
+        List<Reservation> showingReservations = ticketService.findReservationsForShowing(showing);
+        for(Reservation r : showingReservations) {
+            ticketForm.setReserved(r.getRowNumber(), r.getSeatInRow());
+        }
+
+        model.addAttribute("ticketForm", ticketForm);
+
+        return "buyTicket";
+    }
+
+    @RequestMapping("/buy-ticket/{row}/{seat}")
+    public String chooseSeat(@ModelAttribute("ticketForm") TicketForm ticketForm,
+                             @PathVariable int row, @PathVariable int seat) {
+        ticketForm.clickOnSeat(row, seat);
         return "buyTicket";
     }
 

@@ -27,6 +27,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 
+    public Integer getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

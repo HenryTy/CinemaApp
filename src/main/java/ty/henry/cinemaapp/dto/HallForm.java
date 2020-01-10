@@ -11,12 +11,12 @@ public class HallForm {
     private String name;
 
     @Min(value = 1, message = "Sala musi mieć co najmniej 1 rząd")
-    @Max(value = 99, message = "Sala może mieć maksymalnie 99 rzędów")
+    @Max(value = 20, message = "Sala może mieć maksymalnie 20 rzędów")
     @NotNull(message = "Podaj liczbę rzędów")
     private Integer rowCount;
 
     @Min(value = 1, message = "Rząd musi mieć co najmniej 1 miejsce")
-    @Max(value = 99, message = "Rząd może mieć maksymalnie 99 miejsc")
+    @Max(value = 30, message = "Rząd może mieć maksymalnie 30 miejsc")
     @NotNull(message = "Podaj liczbę miejsc w rzędzie")
     private Integer seatsInRow;
 

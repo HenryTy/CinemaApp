@@ -14,6 +14,32 @@
 
     <h2 class="indigo-text center" th:text="${showing.movie.title}">Film</h2>
     <h5 class="indigo-text center" th:text="${showing.showingDate.toLocalDate() + ' ' + showing.showingDate.toLocalTime()}">Data</h5>
+
+    <div class="row center" th:each="row: ${#numbers.sequence(1, ticketForm.getRowCount())}">
+        <span th:text="${row}"></span>
+        <span th:each="seat: ${#numbers.sequence(1, ticketForm.getSeatsInRow())}">
+            <a th:href="@{/buy-ticket/{r}/{s}(r=${row}, s=${seat})}">
+                <button class="btn-small waves-effect waves-light green"
+                        style="padding-left: 12px; padding-right: 12px"
+                        th:text="${seat}"
+                        th:if="${ticketForm.getSeatState(row, seat) == T(ty.henry.cinemaapp.dto.TicketForm.SeatState).FREE}">
+                </button>
+
+                <button class="btn-small waves-effect waves-light black"
+                        style="padding-left: 12px; padding-right: 12px"
+                        th:text="${seat}"
+                        th:if="${ticketForm.getSeatState(row, seat) == T(ty.henry.cinemaapp.dto.TicketForm.SeatState).CLICKED}">
+                </button>
+            </a>
+
+            <button class="btn-small waves-effect waves-light disabled"
+                    style="padding-left: 12px; padding-right: 12px"
+                    th:text="${seat}"
+                    th:if="${ticketForm.getSeatState(row, seat) == T(ty.henry.cinemaapp.dto.TicketForm.SeatState).RESERVED}">
+            </button>
+        </span>
+        <span th:text="${row}"></span>
+    </div>
 </div>
 <script src="/webjars/jquery/3.4.1/jquery.js"></script>
 <script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>

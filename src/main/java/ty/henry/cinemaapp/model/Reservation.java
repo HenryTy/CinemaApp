@@ -10,6 +10,7 @@ public class Reservation {
 
     @ManyToOne
     @MapsId("ticketNumber")
+    @JoinColumn(name = "ticketNumber", nullable = false)
     private Ticket ticket;
 
     public ReservationId getId() {

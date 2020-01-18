@@ -63,6 +63,10 @@ public class TicketService {
         return showingReservations;
     }
 
+    public Ticket findTicketByNumber(String ticketNumber) {
+        return ticketRepository.findById(ticketNumber).orElseThrow(EntityNotExistException::new);
+    }
+
     public void buyTicket(TicketForm ticketForm) {
         List<int[]> clickedSeats = ticketForm.getClickedSeats();
 
@@ -94,7 +98,7 @@ public class TicketService {
                 function.setArray(5, seatsArray);
 
                 function.execute();
-                System.out.println(function.getString(1));
+                ticketForm.setGeneratedTicketNumber(function.getString(1));
             }
         } );
     }

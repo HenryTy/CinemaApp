@@ -12,9 +12,16 @@
     <div th:replace="main.html :: mainMenu">
     </div>
 
-    <h2 class="indigo-text center" th:text="${showing.movie.title}">Film</h2>
+    <h2 class="indigo-text center" th:text="'Kup bilet na seans filmu ' + ${showing.movie.title}">Film</h2>
     <h5 class="indigo-text center" th:text="${showing.showingDate.toLocalDate() + ' ' + showing.showingDate.toLocalTime()}">Data</h5>
+    <h5 class="indigo-text center">Wybierz miejsca na planie sali</h5>
 
+    <div class="row center">
+        <button class="btn waves-effect waves-light disabled"
+                style="padding-left: 150px; padding-right: 150px">
+            Ekran
+        </button>
+    </div>
     <div class="row center" th:each="row: ${#numbers.sequence(1, ticketForm.getRowCount())}">
         <span th:text="${row}"></span>
         <span th:each="seat: ${#numbers.sequence(1, ticketForm.getSeatsInRow())}">
@@ -39,6 +46,56 @@
             </button>
         </span>
         <span th:text="${row}"></span>
+    </div>
+
+    <div class="col m8 s12 offset-m2">
+        <h5 class="indigo-text">Legenda:</h5>
+        <button class="btn-small waves-effect waves-light green"
+                style="padding-left: 12px; padding-right: 12px"
+                th:text="1">
+        </button>
+        Miejsce wolne
+        <button class="btn-small waves-effect waves-light black"
+                style="padding-left: 12px; padding-right: 12px"
+                th:text="1">
+        </button>
+        Miejsce wybrane
+        <button class="btn-small waves-effect waves-light disabled"
+                style="padding-left: 12px; padding-right: 12px"
+                th:text="1">
+        </button>
+        Miejsce zajęte
+
+        <h5 class="indigo-text">Wybrane miejsca:</h5>
+        <ul class="collection">
+            <li class="collection-item" th:each="clickedSeat : ${ticketForm.getClickedSeats()}">
+                <div class="row">
+                    <div class="col s4">
+                        <span class="indigo-text" th:text="'Rząd: ' + ${clickedSeat[0]}">Rząd</span>
+                    </div>
+                    <div class="col s4">
+                        <span class="indigo-text" th:text="'Miejsce: ' + ${clickedSeat[1]}">Miejsce</span>
+                    </div>
+                    <div class="col s4">
+                        <span class="indigo-text secondary-content" th:text="${ticketForm.getOneTicketPrice()}">Cena</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="indigo-text center" th:text="'Razem: ' + ${ticketForm.getTicketPriceWithoutDiscount()}">Cena</div>
+        <div class="indigo-text center"
+            th:text="'Zniżka za korzystanie z aplikacji: ' + ${ticketForm.getDiscount()}">Zniżka</div>
+        <h6 class="indigo-text center" th:text="'Cena ze zniżką: ' + ${ticketForm.getTicketPriceWithDiscount()}">Cena ze zniżką</h6>
+
+        <h5 class="indigo-text">Dane do płatności:</h5>
+        <div class="input-field col s6">
+            <input id="creditCardNumber" type="number"/>
+            <label for="creditCardNumber">Numer karty płatniczej</label>
+        </div>
+        <br>
+        <form th:action="@{/submit-buy-ticket}" method="post">
+            <button class="btn waves-effect waves-light secondary-content" type="submit">Kupuję i płacę</button>
+        </form>
     </div>
 </div>
 <script src="/webjars/jquery/3.4.1/jquery.js"></script>

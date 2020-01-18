@@ -1,13 +1,19 @@
 package ty.henry.cinemaapp.dto;
 
+import ty.henry.cinemaapp.logic.TicketPriceCalculator;
+import ty.henry.cinemaapp.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicketForm {
 
-    private int userId;
+    private User user;
     private long showingId;
     private SeatState[][] seatStates;
+    private int clickedSeatsCount;
+
+    private String generatedTicketNumber;
 
     public TicketForm(int rowCount, int seatsInRow) {
         seatStates = new SeatState[rowCount][seatsInRow];
@@ -16,6 +22,7 @@ public class TicketForm {
                 seatStates[i][j] = SeatState.FREE;
             }
         }
+        clickedSeatsCount = 0;
     }
 
     public int getRowCount() {
@@ -27,11 +34,11 @@ public class TicketForm {
     }
 
     public int getUserId() {
-        return userId;
+        return user.getId();
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public long getShowingId() {
@@ -49,9 +56,11 @@ public class TicketForm {
     public void clickOnSeat(int row, int seat) {
         if(seatStates[row-1][seat-1] == SeatState.FREE) {
             seatStates[row-1][seat-1] = SeatState.CLICKED;
+            clickedSeatsCount++;
         }
         else if(seatStates[row-1][seat-1] == SeatState.CLICKED) {
             seatStates[row-1][seat-1] = SeatState.FREE;
+            clickedSeatsCount--;
         }
     }
 
@@ -69,6 +78,30 @@ public class TicketForm {
             }
         }
         return clickedSeats;
+    }
+
+    public String getOneTicketPrice() {
+        return String.format("%.2f PLN", TicketPriceCalculator.TICKET_PRICE);
+    }
+
+    public String getDiscount() {
+        return user.getPoints() + "%";
+    }
+
+    public String getTicketPriceWithoutDiscount() {
+        return String.format("%.2f PLN", clickedSeatsCount * TicketPriceCalculator.TICKET_PRICE);
+    }
+
+    public String getTicketPriceWithDiscount() {
+        return String.format("%.2f PLN", clickedSeatsCount * TicketPriceCalculator.getTicketPriceWithDiscount(user.getPoints()));
+    }
+
+    public String getGeneratedTicketNumber() {
+        return generatedTicketNumber;
+    }
+
+    public void setGeneratedTicketNumber(String generatedTicketNumber) {
+        this.generatedTicketNumber = generatedTicketNumber;
     }
 
     public enum SeatState {

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import ty.henry.cinemaapp.dto.TicketForm;
 import ty.henry.cinemaapp.model.*;
 import ty.henry.cinemaapp.service.TicketService;
@@ -55,7 +56,7 @@ public class TicketController {
 
         TicketForm ticketForm = new TicketForm(showingHall.getRowCount(), showingHall.getSeatsInRow());
         ticketForm.setShowingId(showing.getId());
-        ticketForm.setUserId(currentUser.getId());
+        ticketForm.setUser(currentUser);
 
         List<Reservation> showingReservations = ticketService.findReservationsForShowing(showing);
         for(Reservation r : showingReservations) {
@@ -72,6 +73,20 @@ public class TicketController {
                              @PathVariable int row, @PathVariable int seat) {
         ticketForm.clickOnSeat(row, seat);
         return "buyTicket";
+    }
+
+    @PostMapping("/submit-buy-ticket")
+    public String buyTicket(@ModelAttribute("ticketForm") TicketForm ticketForm, SessionStatus sessionStatus) {
+        ticketService.buyTicket(ticketForm);
+        sessionStatus.setComplete();
+        return "redirect:/ticket/" + ticketForm.getGeneratedTicketNumber();
+    }
+
+    @GetMapping("/ticket/{ticketNumber}")
+    public String showTicketPurchaseConfirmation(@PathVariable String ticketNumber, Model model) {
+        Ticket ticket = ticketService.findTicketByNumber(ticketNumber);
+        model.addAttribute("ticket", ticket);
+        return "ticket";
     }
 
     public static class SelectShowingForm {

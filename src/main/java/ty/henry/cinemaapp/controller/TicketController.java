@@ -55,13 +55,10 @@ public class TicketController {
         Hall showingHall = showing.getHall();
 
         TicketForm ticketForm = new TicketForm(showingHall.getRowCount(), showingHall.getSeatsInRow());
-        ticketForm.setShowingId(showing.getId());
+        ticketForm.setShowing(showing);
         ticketForm.setUser(currentUser);
 
-        List<Reservation> showingReservations = ticketService.findReservationsForShowing(showing);
-        for(Reservation r : showingReservations) {
-            ticketForm.setReserved(r.getRowNumber(), r.getSeatInRow());
-        }
+        ticketService.markReservedSeats(ticketForm);
 
         model.addAttribute("ticketForm", ticketForm);
 
@@ -76,10 +73,17 @@ public class TicketController {
     }
 
     @PostMapping("/submit-buy-ticket")
-    public String buyTicket(@ModelAttribute("ticketForm") TicketForm ticketForm, SessionStatus sessionStatus) {
+    public String buyTicket(@ModelAttribute("ticketForm") TicketForm ticketForm, Model model, SessionStatus sessionStatus) {
         ticketService.buyTicket(ticketForm);
-        sessionStatus.setComplete();
-        return "redirect:/ticket/" + ticketForm.getGeneratedTicketNumber();
+        if(ticketForm.isSuccessfulPurchase()) {
+            sessionStatus.setComplete();
+            return "redirect:/ticket/" + ticketForm.getGeneratedTicketNumber();
+        }
+        else {
+            ticketService.markReservedSeats(ticketForm);
+            model.addAttribute("errorMessage", ticketForm.getErrorMessage());
+            return "buyTicket";
+        }
     }
 
     @GetMapping("/ticket/{ticketNumber}")

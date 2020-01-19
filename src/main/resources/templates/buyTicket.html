@@ -15,6 +15,7 @@
     <h2 class="indigo-text center" th:text="'Kup bilet na seans filmu ' + ${showing.movie.title}">Film</h2>
     <h5 class="indigo-text center" th:text="${showing.showingDate.toLocalDate() + ' ' + showing.showingDate.toLocalTime()}">Data</h5>
     <h5 class="indigo-text center">Wybierz miejsca na planie sali</h5>
+    <div class="red-text center" th:if="${errorMessage != null}" th:text="${errorMessage}">Błąd</div>
 
     <div class="row center">
         <button class="btn waves-effect waves-light disabled"

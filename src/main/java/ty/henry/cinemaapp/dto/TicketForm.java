@@ -1,6 +1,7 @@
 package ty.henry.cinemaapp.dto;
 
 import ty.henry.cinemaapp.logic.TicketPriceCalculator;
+import ty.henry.cinemaapp.model.Showing;
 import ty.henry.cinemaapp.model.User;
 
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ import java.util.List;
 public class TicketForm {
 
     private User user;
-    private long showingId;
+    private Showing showing;
     private SeatState[][] seatStates;
     private int clickedSeatsCount;
 
+    private boolean successfulPurchase;
     private String generatedTicketNumber;
+    private String errorMessage;
 
     public TicketForm(int rowCount, int seatsInRow) {
         seatStates = new SeatState[rowCount][seatsInRow];
@@ -37,16 +40,24 @@ public class TicketForm {
         return user.getId();
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public void setUser(User user) {
         this.user = user;
     }
 
     public long getShowingId() {
-        return showingId;
+        return showing.getId();
     }
 
-    public void setShowingId(long showingId) {
-        this.showingId = showingId;
+    public Showing getShowing() {
+        return showing;
+    }
+
+    public void setShowing(Showing showing) {
+        this.showing = showing;
     }
 
     public SeatState getSeatState(int row, int seat) {
@@ -96,12 +107,28 @@ public class TicketForm {
         return String.format("%.2f PLN", clickedSeatsCount * TicketPriceCalculator.getTicketPriceWithDiscount(user.getPoints()));
     }
 
+    public boolean isSuccessfulPurchase() {
+        return successfulPurchase;
+    }
+
+    public void setSuccessfulPurchase(boolean successfulPurchase) {
+        this.successfulPurchase = successfulPurchase;
+    }
+
     public String getGeneratedTicketNumber() {
         return generatedTicketNumber;
     }
 
     public void setGeneratedTicketNumber(String generatedTicketNumber) {
         this.generatedTicketNumber = generatedTicketNumber;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public enum SeatState {

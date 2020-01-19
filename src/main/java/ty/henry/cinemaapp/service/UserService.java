@@ -51,6 +51,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void addPointToUser(User user) {
+        user.setPoints(user.getPoints() + 1);
+        userRepository.save(user);
+    }
+
     public void deleteUser(String email) {
         userRepository.deleteByEmail(email);
     }

@@ -1,6 +1,7 @@
 package ty.henry.cinemaapp.service;
 
 import oracle.jdbc.OracleConnection;
+import oracle.jdbc.OracleDatabaseException;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -16,6 +17,7 @@ import ty.henry.cinemaapp.persistence.TicketRepository;
 
 import java.sql.Array;
 import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +32,9 @@ public class TicketService {
 
     @Autowired
     private TicketRepository ticketRepository;
+
+    @Autowired
+    private UserService userService;
 
     public List<Showing> findShowingsForMovieAndDate(Movie movie, LocalDate date) {
         LocalDateTime from = date.atStartOfDay();
@@ -67,8 +72,21 @@ public class TicketService {
         return ticketRepository.findById(ticketNumber).orElseThrow(EntityNotExistException::new);
     }
 
+    public void markReservedSeats(TicketForm ticketForm) {
+        List<Reservation> showingReservations = findReservationsForShowing(ticketForm.getShowing());
+        for(Reservation r : showingReservations) {
+            ticketForm.setReserved(r.getRowNumber(), r.getSeatInRow());
+        }
+    }
+
     public void buyTicket(TicketForm ticketForm) {
         List<int[]> clickedSeats = ticketForm.getClickedSeats();
+
+        if(clickedSeats.size() == 0) {
+            ticketForm.setSuccessfulPurchase(false);
+            ticketForm.setErrorMessage("Wybierz co najmniej jedno miejsce");
+            return;
+        }
 
         int[] rows = new int[clickedSeats.size()];
         int[] seats = new int[clickedSeats.size()];
@@ -99,7 +117,23 @@ public class TicketService {
 
                 function.execute();
                 ticketForm.setGeneratedTicketNumber(function.getString(1));
+                ticketForm.setSuccessfulPurchase(true);
+            } catch (SQLException ex) {
+                if(ex.getCause() != null && ex.getCause() instanceof OracleDatabaseException &&
+                        ((OracleDatabaseException) ex.getCause()).getOracleErrorNumber() == 20000) {
+                    ticketForm.setSuccessfulPurchase(false);
+                    ticketForm.setErrorMessage("Niektóre z wybranych przez Ciebie" +
+                            " miejsc zostały w międzyczasie zarezerwowane. Spróbuj ponownie.");
+                    return;
+                }
+                else {
+                    throw ex;
+                }
             }
         } );
+
+        if(ticketForm.isSuccessfulPurchase()) {
+            userService.addPointToUser(ticketForm.getUser());
+        }
     }
 }

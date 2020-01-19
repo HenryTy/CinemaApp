@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Przeglądaj bilety</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center" th:text="'Bilety na seans filmu ' + ${showing.movie.title}">Film</h2>
+    <h5 class="indigo-text center" th:text="${showing.showingDate.toLocalDate() + ' ' + showing.showingDate.toLocalTime()}">Data</h5>
+
+    <form th:action="@{/search-tickets/{showingId}(showingId=${showing.id})}" method="post" class="col s12">
+        <div class="row center">
+            <div class="input-field col s6 offset-s3">
+                <i class="material-icons prefix">search</i>
+                <input id="search" name="search" type="text" class="validate" th:value="${search}"/>
+                <label for="search">Numer biletu</label>
+            </div>
+        </div>
+    </form>
+
+    <div class="col m8 s12 offset-m2">
+        <ul class="collection">
+            <li class="collection-item" th:each="ticket : ${tickets}">
+                <div class="row">
+                    <div class="col s4">
+                        <h6 class="indigo-text" th:text="${ticket.ticketNumber.substring(0, 10)} + '...'">Numer biletu</h6>
+                    </div>
+                    <div class="col s4">
+                        <h6 class="indigo-text" th:if="${ticket.status == T(ty.henry.cinemaapp.model.TicketStatus).USED}">Skasowany</h6>
+                        <form th:if="${ticket.status == T(ty.henry.cinemaapp.model.TicketStatus).VALID}"
+                              th:action="@{/validate-ticket/{number}(number=${ticket.ticketNumber})}" th:method="post">
+                            <button class="btn teal" type="submit">Skasuj
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col s4">
+                        <form th:action="@{/ticket/{number}(number=${ticket.ticketNumber})}" th:method="get" class="secondary-content center">
+                            <button class="btn teal" type="submit">Szczegóły
+                                <i class="material-icons right">description</i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

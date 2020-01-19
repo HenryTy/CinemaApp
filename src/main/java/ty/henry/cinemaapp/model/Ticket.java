@@ -49,4 +49,8 @@ public class Ticket {
     public List<Reservation> getReservations() {
         return reservations;
     }
+
+    public void setStatus(TicketStatus status) {
+        this.status = status;
+    }
 }

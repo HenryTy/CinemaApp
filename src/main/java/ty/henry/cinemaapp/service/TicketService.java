@@ -8,10 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ty.henry.cinemaapp.dto.TicketForm;
 import ty.henry.cinemaapp.error.EntityNotExistException;
-import ty.henry.cinemaapp.model.Movie;
-import ty.henry.cinemaapp.model.Reservation;
-import ty.henry.cinemaapp.model.Showing;
-import ty.henry.cinemaapp.model.Ticket;
+import ty.henry.cinemaapp.model.*;
 import ty.henry.cinemaapp.persistence.ShowingRepository;
 import ty.henry.cinemaapp.persistence.TicketRepository;
 
@@ -66,6 +63,10 @@ public class TicketService {
         }
 
         return showingReservations;
+    }
+
+    public List<Ticket> findTicketsForShowing(Showing showing, String search) {
+        return ticketRepository.findAllByShowingAndTicketNumberStartsWith(showing, search, Sort.by("ticketNumber"));
     }
 
     public Ticket findTicketByNumber(String ticketNumber) {
@@ -135,5 +136,10 @@ public class TicketService {
         if(ticketForm.isSuccessfulPurchase()) {
             userService.addPointToUser(ticketForm.getUser());
         }
+    }
+
+    public void validateTicket(Ticket ticket) {
+        ticket.setStatus(TicketStatus.USED);
+        ticketRepository.save(ticket);
     }
 }

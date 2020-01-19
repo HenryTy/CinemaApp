@@ -30,7 +30,20 @@
             </div>
             <div class="row" sec:authorize="hasRole('ROLE_USER')">
                 <div class="col s6 offset-s3">
-                    <button class="btn waves-effect waves-light" type="submit">Kup bilet
+                    <button class="btn waves-effect waves-light" type="submit"
+                        name="user" value="user">Kup bilet
+                    </button>
+                </div>
+            </div>
+            <div class="row s12" sec:authorize="hasRole('ROLE_ADMIN')">
+                <div class="col s6">
+                    <button class="btn waves-effect waves-light" type="submit"
+                        name="tickets" value="tickets">Przeglądaj bilety
+                    </button>
+                </div>
+                <div class="col s6">
+                    <button class="btn waves-effect waves-light secondary-content" type="submit"
+                            name="cancel" value="cancel">Odwołaj seans
                     </button>
                 </div>
             </div>

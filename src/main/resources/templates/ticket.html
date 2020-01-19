@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Bilet</title>
@@ -13,10 +14,12 @@
     </div>
 
     <div class="col m8 s12 offset-m2">
+        <span sec:authorize="hasRole('ROLE_USER')">
         <h5 class="indigo-text center">Zakup biletu zakończył się sukcesem!</h5>
         <h5 class="indigo-text center">Wydrukowany bilet należy pokazać obsłudze kina przy wejściu na seans</h5>
         <h5 class="indigo-text center">Za zakup biletu otrzymujesz
             +1 punkt za korzystanie z aplikacji <br> (następny bilet kupisz taniej!)</h5>
+        </span>
         <h4 class="indigo-text">Dane seansu</h4>
         <p>
             Tytuł filmu: <span th:text="${ticket.showing.movie.title}">Tytuł filmu</span>
@@ -36,7 +39,20 @@
             <span th:text="'Rząd: ' + ${reservation.rowNumber} + ' Miejsce: ' + ${reservation.seatInRow}">Miejsce</span>
             <br><br>
         </div>
-        <button class="btn waves-effect waves-light">Drukuj bilet</button>
+        <span sec:authorize="hasRole('ROLE_ADMIN')">
+            <h4 class="indigo-text">Dane użytkownika</h4>
+            <p>
+                Imię: <span th:text="${ticket.user.name}">Imię</span>
+                <br>
+                Nazwisko: <span th:text="${ticket.user.surname}">Nazwisko</span>
+                <br>
+                Email: <span th:text="${ticket.user.email}">Email</span>
+                <br>
+                Data zakupu: <span th:text="${ticket.purchaseDate.toLocalDate() + ' ' + ticket.purchaseDate.toLocalTime()}">Data zakupu</span>
+                <br>
+            </p>
+        </span>
+        <button sec:authorize="hasRole('ROLE_USER')" class="btn waves-effect waves-light">Drukuj bilet</button>
     </div>
 
 </div>

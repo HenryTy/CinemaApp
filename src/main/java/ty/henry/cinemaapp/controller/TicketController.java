@@ -5,11 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ty.henry.cinemaapp.dto.TicketForm;
 import ty.henry.cinemaapp.model.*;
 import ty.henry.cinemaapp.service.TicketService;
 import ty.henry.cinemaapp.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class TicketController {
         return "showing";
     }
 
-    @PostMapping("/buy-ticket")
+    @PostMapping(value = "/buy-ticket", params = {"user"})
     public String showBuyTicketPage(SelectShowingForm selectShowingForm, Model model,
                                     Principal principal) {
         Showing showing = ticketService.findShowingById(selectShowingForm.getSelectedShowing());
@@ -91,6 +93,39 @@ public class TicketController {
         Ticket ticket = ticketService.findTicketByNumber(ticketNumber);
         model.addAttribute("ticket", ticket);
         return "ticket";
+    }
+
+    @PostMapping(value = "/buy-ticket", params = {"tickets"})
+    public String showAdminTicketsPage(SelectShowingForm selectShowingForm) {
+        Showing showing = ticketService.findShowingById(selectShowingForm.getSelectedShowing());
+        return "redirect:/tickets/" + showing.getId();
+    }
+
+    @GetMapping("/tickets/{showingId}")
+    public String showAdminTicketsPage(@PathVariable long showingId, Model model,
+                                       @RequestParam(defaultValue = "") String search) {
+        Showing showing = ticketService.findShowingById(showingId);
+        List<Ticket> tickets = ticketService.findTicketsForShowing(showing, search);
+
+        model.addAttribute("showing", showing);
+        model.addAttribute("search", search);
+        model.addAttribute("tickets", tickets);
+        return "ticketListAdmin";
+    }
+
+    @PostMapping("/search-tickets/{showingId}")
+    public String searchTickets(@PathVariable long showingId, HttpServletRequest request,
+                                RedirectAttributes redirectAttributes) {
+        String search = request.getParameter("search");
+        redirectAttributes.addAttribute("search", search);
+        return "redirect:/tickets/{showingId}";
+    }
+
+    @PostMapping("/validate-ticket/{number}")
+    public String validateTicket(@PathVariable String number) {
+        Ticket ticket = ticketService.findTicketByNumber(number);
+        ticketService.validateTicket(ticket);
+        return "redirect:/tickets/" + ticket.getShowing().getId();
     }
 
     public static class SelectShowingForm {

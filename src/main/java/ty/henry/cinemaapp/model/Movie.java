@@ -1,8 +1,6 @@
 package ty.henry.cinemaapp.model;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,9 +21,6 @@ public class Movie implements Comparable<Movie> {
 
     private String director;
     private Integer allowedFromAge;
-
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
-    private List<Showing> showings;
 
     public Integer getId() {
         return id;
@@ -53,19 +48,6 @@ public class Movie implements Comparable<Movie> {
 
     public Integer getAllowedFromAge() {
         return allowedFromAge;
-    }
-
-    public List<Showing> getShowings() {
-        return showings;
-    }
-
-    public void addShowing(Hall hall, LocalDateTime showingDate) {
-        Showing showing = new Showing(this, hall, showingDate);
-        showings.add(showing);
-    }
-
-    public void removeShowing(Showing showing) {
-        showings.remove(showing);
     }
 
     public void setTitle(String title) {

@@ -115,13 +115,17 @@ public class MovieController {
         if(result.hasErrors()) {
             return "addMovie";
         }
-        return "redirect:/movies";
+        return "redirect:/movies?added";
     }
 
     @GetMapping("/edit-movie/{id}")
     public String showEditMoviePage(MovieForm movieForm, @PathVariable Integer id, Model model) {
-        model.addAttribute("genres", MovieGenre.values());
         Movie movie = movieService.findMovieById(id);
+        if(movieService.hasMovieFutureShowings(movie)) {
+            return "redirect:/movie/{id}?modificationError";
+        }
+
+        model.addAttribute("genres", MovieGenre.values());
         movieForm.setTitle(movie.getTitle());
         movieForm.setProductionYear(movie.getProductionYear());
         movieForm.setLengthMinutes(movie.getLengthMinutes());
@@ -143,13 +147,17 @@ public class MovieController {
         if(result.hasErrors()) {
             return "editMovie";
         }
-        return "redirect:/movie/{id}";
+        return "redirect:/movie/{id}?updated";
     }
 
     @DeleteMapping("/delete-movie/{id}")
     public String deleteMovie(@PathVariable Integer id) {
-        movieService.deleteMovie(id);
-        return "redirect:/movies";
+        boolean deleteSuccess = movieService.deleteMovie(id);
+        if(deleteSuccess) {
+            return "redirect:/movies?deleted";
+        } else {
+            return "redirect:/movie/{id}?modificationError";
+        }
     }
 
     @PostMapping("/rate-movie/{movieId}")

@@ -42,12 +42,15 @@ public class HallController {
         if(result.hasErrors()) {
             return "addHall";
         }
-        return "redirect:/halls";
+        return "redirect:/halls?added=true";
     }
 
     @GetMapping("/edit-hall/{id}")
     public String showEditHallPage(HallForm hallForm, @PathVariable Integer id) {
         Hall hall = hallService.findHallById(id);
+        if(hallService.hasHallFutureShowings(hall)) {
+            return "redirect:/halls?modificationError=true";
+        }
         hallForm.setName(hall.getName());
         hallForm.setRowCount(hall.getRowCount());
         hallForm.setSeatsInRow(hall.getSeatsInRow());
@@ -66,12 +69,17 @@ public class HallController {
         if(result.hasErrors()) {
             return "editHall";
         }
-        return "redirect:/halls";
+        return "redirect:/halls?updated=true";
     }
 
     @DeleteMapping("/hall/{id}")
     public String deleteHall(@PathVariable Integer id) {
-        hallService.deleteHall(id);
-        return "redirect:/halls";
+        boolean deleteSuccess = hallService.deleteHall(id);
+        String redirectHalls = "redirect:/halls";
+        if(deleteSuccess) {
+            return redirectHalls + "?deleted=true";
+        } else {
+            return redirectHalls + "?modificationError=true";
+        }
     }
 }

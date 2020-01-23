@@ -14,6 +14,8 @@
     </div>
 
     <h2 class="indigo-text center">Repertuar</h2>
+    <div class="green-text center" th:if="${param.added}">Film został dodany</div>
+    <div class="green-text center" th:if="${param.deleted}">Film został usunięty</div>
 
     <form th:action="@{/search-movies}" method="post" class="col s12">
         <div class="row center">

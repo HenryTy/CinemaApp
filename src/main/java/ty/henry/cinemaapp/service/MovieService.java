@@ -1,5 +1,6 @@
 package ty.henry.cinemaapp.service;
 
+import oracle.jdbc.OracleDatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -62,8 +63,23 @@ public class MovieService {
         return movieRepository.save(movie);
     }
 
-    public void deleteMovie(Integer id) {
-        movieRepository.deleteById(id);
+    public boolean deleteMovie(Integer id) {
+        try {
+            movieRepository.deleteById(id);
+        } catch (Exception ex) {
+            Throwable rootCause = ex;
+            while (rootCause.getCause() != null && rootCause.getCause() != rootCause) {
+                rootCause = rootCause.getCause();
+            }
+            if(rootCause instanceof OracleDatabaseException &&
+                    ((OracleDatabaseException) rootCause).getOracleErrorNumber() == 20000) {
+                return false;
+            }
+            else {
+                throw ex;
+            }
+        }
+        return true;
     }
 
     public void addShowing(ShowingForm showingForm) {
@@ -85,6 +101,10 @@ public class MovieService {
 
     public List<Showing> findAllFutureShowings() {
         return showingRepository.findAllByShowingDateAfter(LocalDateTime.now(), Sort.by("showingDate"));
+    }
+
+    public boolean hasMovieFutureShowings(Movie movie) {
+        return findFutureShowingsForMovie(movie).size() > 0;
     }
 
     private void fillMovieWithFormData(Movie movie, MovieForm movieForm) {

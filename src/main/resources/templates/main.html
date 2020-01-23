@@ -13,8 +13,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extrasspringsecurity5">
         <a href="/profile"><button class="col s2 btn">Profil</button></a>
         <a href="/movies"><button class="col s2 btn">Repertuar</button></a>
         <span sec:authorize="hasRole('ROLE_USER')">
-                <button class="col s2 btn">Kupione bilety</button>
-                <button class="col s2 btn">Powiadomienia</button>
+            <a href="/my-tickets"><button class="col s2 btn">Kupione bilety</button></a>
+            <a href="/notifications"><button class="col s2 btn">Powiadomienia</button></a>
         </span>
         <span sec:authorize="hasRole('ROLE_ADMIN')">
                 <a href="/halls"><button class="col s2 btn">Sale</button></a>

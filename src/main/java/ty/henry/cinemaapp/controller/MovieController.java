@@ -7,12 +7,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ty.henry.cinemaapp.dto.MovieForm;
+import ty.henry.cinemaapp.dto.RatingForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.logic.ShowingClassifier;
 import ty.henry.cinemaapp.logic.ShowingDateClassifier;
 import ty.henry.cinemaapp.logic.TwoLevelShowingClassifier;
 import ty.henry.cinemaapp.model.*;
 import ty.henry.cinemaapp.service.MovieService;
+import ty.henry.cinemaapp.service.RatingService;
+import ty.henry.cinemaapp.service.TicketService;
 import ty.henry.cinemaapp.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +33,12 @@ public class MovieController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TicketService ticketService;
+
+    @Autowired
+    private RatingService ratingService;
 
     @GetMapping("/movies")
     public String showMovies(Model model, @RequestParam(defaultValue = "") String search) {
@@ -64,12 +73,26 @@ public class MovieController {
         }
         else {
             showingsToClassify = movieService.findFutureShowingsForMovie(movie);
+            if(ticketService.hasUserTicketForMovie(currentUser, movie)) {
+                RatingForm ratingForm = new RatingForm();
+                Rating rating = ratingService.findRatingByUserAndMovie(currentUser, movie);
+                int ratingValue = rating == null ? 0 : rating.getValue();
+                ratingForm.setRatingValue(ratingValue);
+                model.addAttribute("ratingForm", ratingForm);
+            }
         }
         ShowingDateClassifier classifier = new ShowingDateClassifier(showingsToClassify);
         model.addAttribute("movie", movie);
         model.addAttribute("classifier", classifier);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         model.addAttribute("dateFormatter", formatter);
+
+        int ratingCount = ratingService.getRatingCountForMovie(movie);
+        model.addAttribute("ratingCount", ratingCount);
+        if(ratingCount > 0) {
+            float ratingAvg = ratingService.getAvgRatingForMovie(movie);
+            model.addAttribute("ratingAvg", String.format("%.1f", ratingAvg));
+        }
         return "movie";
     }
 
@@ -127,5 +150,21 @@ public class MovieController {
     public String deleteMovie(@PathVariable Integer id) {
         movieService.deleteMovie(id);
         return "redirect:/movies";
+    }
+
+    @PostMapping("/rate-movie/{movieId}")
+    public String rateMovie(RatingForm ratingForm, @PathVariable Integer movieId,
+                            Principal principal) {
+        String redirectToMovie = "redirect:/movie/" + movieId;
+        if(ratingForm.getRatingValue() == 0) {
+            return redirectToMovie + "?wrongRating=true";
+        }
+        User currentUser = userService.findUserByEmail(principal.getName());
+        Movie movie = movieService.findMovieById(movieId);
+        boolean firstRate = ratingService.rateMovie(currentUser, movie, ratingForm);
+        if(firstRate) {
+            return redirectToMovie + "?rated=true";
+        }
+        return redirectToMovie;
     }
 }

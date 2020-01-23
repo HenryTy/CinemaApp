@@ -7,6 +7,47 @@
     <link href="/webjars/materializecss/1.0.0/css/materialize.css"
           type="text/css" rel="stylesheet" media="screen,prjection"/>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .rate {
+            float: left;
+            height: 46px;
+            padding: 0 10px;
+        }
+        .rate:not(:checked) > input {
+            position:absolute;
+            top:-9999px;
+        }
+        .rate:not(:checked) > label {
+            float:right;
+            width:1em;
+            overflow:hidden;
+            white-space:nowrap;
+            cursor:pointer;
+            font-size:30px;
+            color:#ccc;
+        }
+        .rate:not(:checked) > label:before {
+            content: '★ ';
+        }
+        .rate > input:checked ~ label {
+            color: #ffc700;
+        }
+        .rate:not(:checked) > label:hover,
+        .rate:not(:checked) > label:hover ~ label {
+            color: #deb217;
+        }
+        .rate > input:checked + label:hover,
+        .rate > input:checked + label:hover ~ label,
+        .rate > input:checked ~ label:hover,
+        .rate > input:checked ~ label:hover ~ label,
+        .rate > label:hover ~ input:checked ~ label {
+            color: #c59b08;
+        }
+    </style>
 </head>
 <body>
 <div class="row">
@@ -14,6 +55,9 @@
     </div>
 
     <h2 class="indigo-text center" th:text="${movie.title}">Film</h2>
+    <div class="green-text center" th:if="${param.canceledShowing}">Seans został odwołany</div>
+    <div class="green-text center" th:if="${param.rated}">
+        Dziękujemy za ocenienie filmu. Otrzymujesz +1 punkt za korzystanie z aplikacji!</div>
     <div class="col m8 s12 offset-m2">
         <div class="row">
             <div class="col s6">
@@ -32,6 +76,11 @@
                     <span th:if="${movie.allowedFromAge != null}">Dozwolony od lat: <span th:text="${movie.allowedFromAge}">Dozwolony od lat</span>
                     <br>
                     </span>
+                    Liczba ocen: <span th:text="${ratingCount}">Liczba ocen</span>
+                    <br>
+                    <span th:if="${ratingAvg != null}">Średnia ocena: <span th:text="${ratingAvg}">Średnia ocena</span>
+                    <br>
+                    </span>
                 </p>
                 <form th:action="@{/edit-movie/{id}(id=${movie.id})}" th:method="get" sec:authorize="hasRole('ROLE_ADMIN')">
                     <button class="btn teal" type="submit">Edytuj dane
@@ -44,6 +93,37 @@
                         <i class="material-icons right">delete</i>
                     </button>
                 </form>
+                <div th:if="${ratingForm != null}">
+                    <h6 class="indigo-text">Oceń film</h6>
+                    <form th:action="@{/rate-movie/{id}(id=${movie.id})}" method="post" th:object="${ratingForm}">
+                        <div class="rate">
+                            <input type="radio" th:field="*{ratingValue}" id="star10" name="rate" value="10" />
+                            <label for="star10" title="10">10 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star9" name="rate" value="9" />
+                            <label for="star9" title="9">9 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star8" name="rate" value="8" />
+                            <label for="star8" title="8">8 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star7" name="rate" value="7" />
+                            <label for="star7" title="7">7 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star6" name="rate" value="6" />
+                            <label for="star6" title="6">6 star</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star5" name="rate" value="5" />
+                            <label for="star5" title="5">5 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star4" name="rate" value="4" />
+                            <label for="star4" title="4">4 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star3" name="rate" value="3" />
+                            <label for="star3" title="3">3 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star2" name="rate" value="2" />
+                            <label for="star2" title="2">2 stars</label>
+                            <input type="radio" th:field="*{ratingValue}" id="star1" name="rate" value="1" />
+                            <label for="star1" title="1">1 star</label>
+                        </div>
+                        <button class="btn waves-effect waves-light" type="submit">Zatwierdź
+                        </button>
+                    </form>
+                    <br>
+                    <div class="red-text" th:if="${param.wrongRating}">Zaznacz swoją ocenę</div>
+                </div>
             </div>
             <div class="col s6">
                 <h3 class="indigo-text">Seanse</h3>

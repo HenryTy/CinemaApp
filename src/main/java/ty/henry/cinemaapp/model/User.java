@@ -27,6 +27,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "Us_Not_Rel",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "notification_id")}
+    )
+    private List<Notification> notifications;
+
     public Integer getId() {
         return id;
     }
@@ -61,6 +69,10 @@ public class User {
 
     public List<Ticket> getTickets() {
         return tickets;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 
     public void setName(String name) {

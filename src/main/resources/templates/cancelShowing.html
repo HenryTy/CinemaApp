@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Odwołaj seans</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center">Odwołaj seans</h2>
+    <div class="red-text center" th:if="${errorMessage != null}" th:text="${errorMessage}">Błąd</div>
+    <div class="col m8 s12 offset-m2" th:if="${errorMessage == null}">
+        <h5 class="indigo-text">Dane seansu</h5>
+        <p>
+            Tytuł filmu: <span th:text="${showing.movie.title}">Tytuł filmu</span>
+            <br>
+            Sala: <span th:text="${showing.hall.name}">Sala</span>
+            <br>
+            Data: <span th:text="${showing.showingDate.toLocalDate()}">Data</span>
+            <br>
+            Godzina: <span th:text="${showing.showingDate.toLocalTime()}">Godzina</span>
+            <br>
+        </p>
+        <h5 class="indigo-text">Wiadomość dla użytkowników, którzy zakupili bilety na ten seans</h5>
+        <form th:action="@{/cancel-showing/{showingId}(showingId=${showing.id})}" method="post" th:object="${cancelShowingForm}">
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea th:field="${cancelShowingForm.message}" id="message" class="materialize-textarea"></textarea>
+                    <label for="message">Wiadomość</label>
+                    <div th:errors="${cancelShowingForm.message}" class="red-text">Błąd</div>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn waves-effect waves-light" type="submit">Zatwierdź
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

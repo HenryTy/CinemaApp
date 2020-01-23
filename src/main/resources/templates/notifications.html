@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Powiadomienia</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<div class="row">
+    <div th:replace="main.html :: mainMenu">
+    </div>
+
+    <h2 class="indigo-text center">Powiadomienia</h2>
+
+    <div class="col m8 s12 offset-m2">
+        <div class="row" th:each="notification : ${notifications}">
+            <div class="col s12">
+                <div class="card green">
+                    <div class="card-content white-text">
+                        <span class="card-title" th:text="${notification.title}">Tytuł</span>
+                        <p th:text="${notification.message}">Wiadomość</p>
+                    </div>
+                    <div class="card-action">
+                        <form th:action="@{/mark-notification-as-read/{notId}(notId=${notification.id})}" method="post">
+                            <button class="btn waves-effect waves-light" type="submit">Usuń powiadomienie</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+</body>
+</html>

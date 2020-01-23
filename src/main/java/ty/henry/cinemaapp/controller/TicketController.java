@@ -128,6 +128,19 @@ public class TicketController {
         return "redirect:/tickets/" + ticket.getShowing().getId();
     }
 
+    @PostMapping(value = "/buy-ticket", params = {"cancel"})
+    public String redirectToCancelShowingPage(SelectShowingForm selectShowingForm) {
+        return "redirect:/cancel-showing/" + selectShowingForm.getSelectedShowing();
+    }
+
+    @GetMapping("/my-tickets")
+    public String showUserTicketsPage(Principal principal, Model model) {
+        User currentUser = userService.findUserByEmail(principal.getName());
+        List<Ticket> tickets = ticketService.findTicketsForUser(currentUser);
+        model.addAttribute("tickets", tickets);
+        return "ticketListUser";
+    }
+
     public static class SelectShowingForm {
         private long selectedShowing;
 

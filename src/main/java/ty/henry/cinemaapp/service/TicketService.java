@@ -69,6 +69,14 @@ public class TicketService {
         return ticketRepository.findAllByShowingAndTicketNumberStartsWith(showing, search, Sort.by("ticketNumber"));
     }
 
+    public List<Ticket> findTicketsForUser(User user) {
+        return ticketRepository.findAllByUser(user, Sort.by(Sort.Direction.DESC, "purchaseDate"));
+    }
+
+    public boolean hasUserTicketForMovie(User user, Movie movie) {
+        return ticketRepository.findByUserAndShowing_Movie(user, movie) != null;
+    }
+
     public Ticket findTicketByNumber(String ticketNumber) {
         return ticketRepository.findById(ticketNumber).orElseThrow(EntityNotExistException::new);
     }

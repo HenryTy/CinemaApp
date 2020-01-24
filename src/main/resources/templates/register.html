@@ -3,48 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Rejestracja</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <h1>Rejestracja</h1>
+<div class="row">
+    <div class="col m8 s12 offset-m2">
+
+     <h2 class="indigo-text">Rejestracja</h2>
 
     <form action="#" th:action="@{/register}" th:object="${userForm}" method="post">
-        <table th:fragment="editableData">
-            <tr>
-                <td>Imię:</td>
-                <td><input type="text" th:field="*{name}"></td>
-                <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
-            </tr>
-            <tr>
-                <td>Nazwisko:</td>
-                <td><input type="text" th:field="*{surname}"></td>
-                <td th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Surname Error</td>
-            </tr>
-            <tr>
-                <td>Data urodzenia:</td>
-                <td><input type="date" th:field="*{dateOfBirth}"></td>
-                <td th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Date Of Birth Error</td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <td>Email:</td>
-                <td><input type="text" th:field="*{email}"></td>
-                <td th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</td>
-            </tr>
-            <tr>
-                <td>Hasło:</td>
-                <td><input type="password" th:field="*{password}"></td>
-                <td th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</td>
-            </tr>
-            <tr>
-                <td>Powtórz hasło:</td>
-                <td><input type="password" th:field="*{matchingPassword}"></td>
-                <td th:if="${#fields.hasErrors('global')}" th:errors="*{global}">Confirm Password Error</td>
-            </tr>
-        </table>
-        <button type="submit">Zatwierdź</button>
+        <div th:fragment="editableData">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input th:field="*{name}" id="name" type="text" th:errorclass="invalid"/>
+                    <label for="name">Imię</label>
+                    <div th:errors="*{name}" class="red-text">Błąd</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input th:field="*{surname}" id="surname" type="text" th:errorclass="invalid"/>
+                    <label for="surname">Nazwisko</label>
+                    <div th:errors="*{surname}" class="red-text">Błąd</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input th:field="*{dateOfBirth}" id="dateOfBirth" type="date" th:errorclass="invalid"/>
+                    <label for="dateOfBirth">Data urodzenia</label>
+                    <div th:errors="*{dateOfBirth}" class="red-text">Błąd</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="input-field col s6">
+                <input th:field="*{email}" id="email" type="text" th:errorclass="invalid"/>
+                <label for="email">Email</label>
+                <div th:errors="*{email}" class="red-text">Błąd</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <input th:field="*{password}" id="password" type="password" th:errorclass="invalid"/>
+                <label for="password">Hasło</label>
+                <div th:errors="*{password}" class="red-text">Błąd</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <input th:field="*{matchingPassword}" id="matchingPassword" type="password" th:errorclass="invalid"/>
+                <label for="matchingPassword">Powtórz hasło</label>
+                <div th:errors="*{global}" class="red-text">Błąd</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s6">
+                <button class="btn waves-effect waves-light" type="submit">Zatwierdź
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+        </div>
     </form>
 
     <a href="/login">Zaloguj się</a>
+
+    </div>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
 </body>
 </html>

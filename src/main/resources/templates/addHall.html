@@ -3,33 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <title>Dodaj salę</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+<div class="row">
 <div th:replace="main.html :: mainMenu">
 </div>
-<br>
-<h1>Dodaj salę</h1>
 
-<form action="#" th:action="@{/add-hall}" th:object="${hallForm}" method="post">
-    <table th:fragment="hallForm">
-        <tr>
-            <td>Nazwa:</td>
-            <td><input type="text" th:field="*{name}"></td>
-            <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
-        </tr>
-        <tr>
-            <td>Liczba rzędów:</td>
-            <td><input type="number" th:field="*{rowCount}"></td>
-            <td th:if="${#fields.hasErrors('rowCount')}" th:errors="*{rowCount}">Row Count Error</td>
-        </tr>
-        <tr>
-            <td>Liczba miejsc w rzędzie:</td>
-            <td><input type="number" th:field="*{seatsInRow}"></td>
-            <td th:if="${#fields.hasErrors('seatsInRow')}" th:errors="*{seatsInRow}">Seats In Row Error</td>
-        </tr>
-    </table>
-    <button type="submit">Zatwierdź</button>
+<h2 class="indigo-text center"> Dodaj salę</h2>
+
+<form th:action="@{/add-hall}" th:object="${hallForm}" method="post" class="col m8 s12 offset-m2">
+
+    <div th:fragment="hallForm">
+        <div class="row">
+            <div class="input-field col s6 offset-s3">
+                <input th:field="${hallForm.name}" id="name" type="text" th:errorclass="invalid"/>
+                <label for="name">Nazwa</label>
+                <div th:errors="*{name}" class="red-text">Błąd</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6 offset-s3">
+                <input th:field="${hallForm.rowCount}" id="rowCount" type="number" th:errorclass="invalid"/>
+                <label for="rowCount">Liczba rzędów</label>
+                <div th:errors="*{rowCount}" class="red-text">Błąd</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6 offset-s3">
+                <input th:field="${hallForm.seatsInRow}" id="seatsInRow" type="number" th:errorclass="invalid"/>
+                <label for="seatsInRow">Liczba miejsc w rzędzie</label>
+                <div th:errors="*{seatsInRow}" class="red-text">Błąd</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s6 offset-s3">
+            <button class="btn waves-effect waves-light" type="submit">Zatwierdź
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </div>
 </form>
-
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
 </body>
 </html>

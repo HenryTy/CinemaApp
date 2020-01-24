@@ -37,6 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
+                .antMatchers("/webjars/jquery/3.4.1/jquery.js",
+                        "/webjars/materializecss/1.0.0/js/materialize.js",
+                        "/webjars/materializecss/1.0.0/css/materialize.css").permitAll()
                 .antMatchers("/login*", "/register*").anonymous()
                 .antMatchers("/add-movie*", "/edit-movie*", "/delete-movie*",
                         "/halls*", "/add-hall*", "/edit-hall*", "/hall*").hasRole(roleAdmin)

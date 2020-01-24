@@ -4,36 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Profil</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+<div class="row">
     <div th:replace="main.html :: mainMenu">
     </div>
-    <br><br>
-    <table border="1">
-        <tr>
-            <td>Imię:</td>
-            <td th:text="${user.name}"></td>
-        </tr>
-        <tr>
-            <td>Nazwisko:</td>
-            <td th:text="${user.surname}"></td>
-        </tr>
-        <tr>
-            <td>Email:</td>
-            <td th:text="${user.email}"></td>
-        </tr>
-        <tr>
-            <td>Data urodzenia:</td>
-            <td th:text="${user.dateOfBirth}"></td>
-        </tr>
-    </table>
-    <span sec:authorize="hasRole('ROLE_USER')">
-        <br>
-        <a href="/edit-user"><button>Edytuj dane</button></a>
-        <br><br>
-        <form th:action="@{/delete-user}" method="post">
-            <input type="submit" value="Usuń konto">
-        </form>
-    </span>
+
+    <h2 class="indigo-text center">Profil</h2>
+    <div class="col m4 s6 offset-m4">
+        <h5 class="indigo-text" th:text="'Imię: ' + ${user.name}">Imię</h5>
+        <h5 class="indigo-text" th:text="'Nazwisko: ' + ${user.surname}">Nazwisko</h5>
+        <h5 class="indigo-text" th:text="'Email: ' + ${user.email}">Email</h5>
+        <h5 class="indigo-text" th:text="'Data urodzenia: ' + ${user.dateOfBirth}">Data urodzenia</h5>
+        <h5 class="indigo-text" th:text="'Punkty: ' + ${user.points}">Punkty</h5>
+        <span sec:authorize="hasRole('ROLE_USER')">
+            <div class="row s12">
+                <div class="col s6">
+                    <a href="/edit-user">
+                        <button class="btn teal">Edytuj dane
+                            <i class="material-icons right">edit</i>
+                        </button>
+                    </a>
+                </div>
+                <div class="col s6">
+                    <form th:action="@{/delete-user}" method="post" class="secondary-content">
+                        <button class="btn teal" type="submit">Usuń konto
+                            <i class="material-icons right">delete</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </span>
+    </div>
+</div>
+    <script src="/webjars/jquery/3.4.1/jquery.js"></script>
+    <script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
 </body>
 </html>

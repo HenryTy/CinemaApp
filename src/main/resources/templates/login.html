@@ -3,33 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Logowanie</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-    <div th:if="${param.error}">
+<div class="row">
+    <div class="col m8 s12 offset-m2">
+    <div class="red-text" th:if="${param.error}">
         Błędny email lub hasło.
     </div>
-    <div th:if="${param.logout}">
+    <div class="green-text" th:if="${param.logout}">
         Zostałeś wylogowany.
     </div>
-    <div th:if="${param.deleted}">
+    <div class="green-text" th:if="${param.deleted}">
         Twoje konto zostało usunięte.
     </div>
-    <h1>Logowanie</h1>
+    <h2 class="indigo-text">Logowanie</h2>
     <form th:action="@{/post_login}" method="post">
-        <table>
-            <tr>
-                <td>Email:</td>
-                <td><input type="text" name="username"></td>
-            </tr>
-            <tr>
-                <td>Hasło:</td>
-                <td><input type="password" name="password"></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Zaloguj się"></td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="input-field col s6">
+                <input id="username" type="text" name="username"/>
+                <label for="username">Email</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s6">
+                <input id="password" type="password" name="password"/>
+                <label for="password">Hasło</label>
+            </div>
+        </div>
+        <div class="row">
+            <button class="btn waves-effect waves-light" type="submit">
+                Zaloguj się
+            </button>
+        </div>
     </form>
     <a href="/register">Zarejestruj się</a>
+    </div>
+</div>
+
+    <script src="/webjars/jquery/3.4.1/jquery.js"></script>
+    <script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
 </body>
 </html>

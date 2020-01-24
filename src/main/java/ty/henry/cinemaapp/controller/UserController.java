@@ -25,7 +25,7 @@ public class UserController {
 
     @RequestMapping("/")
     public String showHomePage() {
-        return "main";
+        return "redirect:/movies";
     }
 
     @GetMapping("/register")

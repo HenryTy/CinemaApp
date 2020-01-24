@@ -3,19 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Edytuj salę</title>
+    <link href="/webjars/materializecss/1.0.0/css/materialize.css"
+          type="text/css" rel="stylesheet" media="screen,prjection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
+<div class="row">
 <div th:replace="main.html :: mainMenu">
 </div>
-<br>
-<h1>Edytuj salę</h1>
 
-<form action="#" th:action="@{/edit-hall/{id}(id=${id})}" th:object="${hallForm}" method="post">
+<h2 class="indigo-text center">Edytuj salę</h2>
+
+<form action="#" th:action="@{/edit-hall/{id}(id=${id})}" th:object="${hallForm}" method="post" class="col m8 s12 offset-m2">
     <div th:replace="addHall.html :: hallForm">
     </div>
-    <button type="submit">Zatwierdź</button>
+    <div class="row s12">
+        <div class="col s3 offset-s3">
+            <button class="btn waves-effect waves-light" type="submit">Zatwierdź
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+        <div class="col s3">
+            <a href="/halls">
+                <button class="btn waves-effect waves-light secondary-content" type="button">Anuluj
+                    <i class="material-icons right">cancel</i>
+                </button>
+            </a>
+        </div>
+    </div>
 </form>
-<br>
-<a href="/halls"><button>Anuluj</button></a>
+</div>
+<script src="/webjars/jquery/3.4.1/jquery.js"></script>
+<script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ty.henry.cinemaapp.dto.MovieForm;
 import ty.henry.cinemaapp.dto.RatingForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
+import ty.henry.cinemaapp.logic.MovieSortType;
 import ty.henry.cinemaapp.logic.ShowingClassifier;
 import ty.henry.cinemaapp.logic.ShowingDateClassifier;
 import ty.henry.cinemaapp.logic.TwoLevelShowingClassifier;
@@ -41,25 +42,64 @@ public class MovieController {
     private RatingService ratingService;
 
     @GetMapping("/movies")
-    public String showMovies(Model model, @RequestParam(defaultValue = "") String search) {
-        Iterable<Movie> movies = movieService.findMovies(search);
-        model.addAttribute("movies", movies);
-        model.addAttribute("search", search);
+    public String showMovies(Model model, @RequestParam(defaultValue = "") String search,
+                             @RequestParam(defaultValue = "0") String sort,
+                             Principal principal) {
+        List<Movie> movies = movieService.findMovies(search);
+        User currentUser = userService.findUserByEmail(principal.getName());
 
-        List<Showing> futureShowings = movieService.findAllFutureShowings();
+        MovieSortType byDateListSortType = MovieSortType.values()[Integer.parseInt(sort)];
+
+        String showingSortField;
+        if(byDateListSortType == MovieSortType.BY_TITLE) {
+            showingSortField = "movie.title";
+        }
+        else {
+            showingSortField = "showingDate";
+        }
+
+        List<Showing> futureShowings = movieService.findFutureShowingsForMovieList(movies, showingSortField);
+
         TwoLevelShowingClassifier<Movie, LocalDate> movieDateShowingClassifier =
                 new TwoLevelShowingClassifier<>(futureShowings, ShowingClassifier.BY_MOVIE_CLASSIFICATION_FUNCTION,
                         ShowingClassifier.BY_DATE_CLASSIFICATION_FUNCTION,
                         null, null);
+
+        ShowingDateClassifier dateShowingClassifier = new ShowingDateClassifier(futureShowings);
+
+        if(currentUser.getRole() == Role.ROLE_ADMIN) {
+            movies.sort(Movie::compareTo);
+            model.addAttribute("movies", movies);
+        }
+        else {
+            model.addAttribute("movies", movieDateShowingClassifier.getFirstLevelKeys());
+        }
+
+
+        model.addAttribute("search", search);
+
+        MovieSortType[] sortTypes = MovieSortType.values();
+
+        model.addAttribute("sortTypes", sortTypes);
+        model.addAttribute("sort", byDateListSortType.ordinal());
+
         model.addAttribute("movieDateShowingClassifier", movieDateShowingClassifier);
+        model.addAttribute("dateShowingClassifier", dateShowingClassifier);
         return "movies";
     }
 
     @PostMapping("/search-movies")
     public String searchMovies(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String search = request.getParameter("search");
+        String sort = request.getParameter("sort");
         redirectAttributes.addAttribute("search", search);
-        return "redirect:/movies";
+        if(sort != null) {
+            redirectAttributes.addAttribute("sort", sort);
+            return "redirect:/movies#listByDates";
+        }
+        else {
+            return "redirect:/movies#listByMovies";
+        }
     }
 
     @GetMapping("/movie/{id}")

@@ -30,9 +30,11 @@
             </div>
             <div class="row" sec:authorize="hasRole('ROLE_USER')">
                 <div class="col s6 offset-s3">
-                    <button class="btn waves-effect waves-light" type="submit"
+                    <button th:if="${!ageLimit}" class="btn waves-effect waves-light" type="submit"
                         name="user" value="user">Kup bilet
                     </button>
+                    <div class="red-text center" th:if="${ageLimit}">Nie możesz kupić biletu
+                        na ten film ze względu na ograniczenie wiekowe</div>
                 </div>
             </div>
             <div class="row s12" sec:authorize="hasRole('ROLE_ADMIN')">

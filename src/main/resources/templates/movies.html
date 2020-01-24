@@ -17,8 +17,17 @@
     <div class="green-text center" th:if="${param.added}">Film został dodany</div>
     <div class="green-text center" th:if="${param.deleted}">Film został usunięty</div>
 
-    <form th:action="@{/search-movies}" method="post" class="col s12">
-        <div class="row center">
+    <div class="col m8 s12 offset-m2">
+        <ul class="tabs">
+            <li class="tab col s6"><a href="#listByMovies">Według filmów</a></li>
+            <li class="tab col s6"><a href="#listByDates">Według daty</a></li>
+        </ul>
+    </div>
+
+    <div id="listByMovies">
+
+    <form th:action="@{/search-movies}" method="post" class="col m8 s12 offset-m2">
+        <div class="row s12">
             <div class="input-field col s6 offset-s3">
                 <i class="material-icons prefix">search</i>
                 <input id="search" name="search" type="text" class="validate" th:value="${search}"/>
@@ -59,6 +68,69 @@
             </li>
         </ul>
     </div>
+
+    </div>
+
+    <div id="listByDates">
+
+        <form th:action="@{/search-movies}" method="post" class="col m8 s12 offset-m2">
+            <div class="row s12">
+                <div class="input-field col s6 offset-s3">
+                    <i class="material-icons prefix">search</i>
+                    <input id="search1" name="search" type="text" class="validate" th:value="${search}"/>
+                    <label for="search1">Wpisz szukany tytuł</label>
+                </div>
+            </div>
+            <div class="row s12">
+                <div class="input-field col s3 offset-s3">
+                    <select id="sort" name="sort">
+                        <option th:each="sortType : ${sortTypes}" th:value="${sortType.ordinal()}"
+                                th:text="${sortType.getDisplayName()}"
+                                th:selected="${sort == sortType.ordinal()}">
+                        </option>
+                    </select>
+                    <label for="sort">Sortuj według</label>
+                </div>
+                <div class="col s3">
+                    <br>
+                    <button class="btn teal secondary-content" type="submit">Zatwierdź
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    <div class="col m8 s12 offset-m2">
+        <div th:each="date : ${dateShowingClassifier.getDates()}">
+            <h5 class="indigo-text" th:text="${date + ''}">Data seansów</h5>
+            <div class="row" th:each="showing : ${dateShowingClassifier.getShowingsByDate(date)}">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col s4">
+                                    <h5 class="indigo-text" th:text="${showing.movie.title} + '(' + ${showing.movie.productionYear} + ')'">Tytuł filmu</h5>
+                                </div>
+                                <div class="col s4">
+                                    <h5 class="indigo-text" th:text="${showing.movie.genre.getDisplayName()} + ', ' + ${showing.movie.lengthMinutes} + 'min'">
+                                        Gatunek i długość filmu
+                                    </h5>
+                                </div>
+                                <div class="col s4">
+                                    <h5 class="indigo-text secondary-content"
+                                        th:text="${showing.showingDate.toLocalTime()}">Godzina seansu</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <a th:href="@{/movie/{id}(id=${showing.movie.id})}">Informacje o filmie</a>
+                            <a th:href="@{/showing/{id}(id=${showing.id})}">Kup bilet</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 </div>
 <div class="center" sec:authorize="hasRole('ROLE_ADMIN')">
     <a href="/add-movie">
@@ -69,5 +141,15 @@
 </div>
 <script src="/webjars/jquery/3.4.1/jquery.js"></script>
 <script src="/webjars/materializecss/1.0.0/js/materialize.js"></script>
+<script>
+    $(document).ready(function(){
+        $('select').formSelect();
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('.tabs').tabs();
+    });
+</script>
 </body>
 </html>

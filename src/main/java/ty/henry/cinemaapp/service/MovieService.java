@@ -29,7 +29,7 @@ public class MovieService {
     @Autowired
     private ShowingRepository showingRepository;
 
-    public Iterable<Movie> findMovies(String search) {
+    public List<Movie> findMovies(String search) {
         if(search.equals("")) {
             return movieRepository.findAll();
         }
@@ -97,6 +97,11 @@ public class MovieService {
 
     public List<Showing> findFutureShowingsForMovie(Movie movie) {
         return showingRepository.findAllByMovieAndShowingDateAfter(movie, LocalDateTime.now(), Sort.by("showingDate"));
+    }
+
+    public List<Showing> findFutureShowingsForMovieList(List<Movie> movies, String sortingField) {
+        return showingRepository.findAllByMovieInAndShowingDateAfter(movies,
+                LocalDateTime.now(), Sort.by(sortingField));
     }
 
     public List<Showing> findAllFutureShowings() {

@@ -17,6 +17,8 @@ public interface ShowingRepository extends JpaRepository<Showing, Long> {
 
     List<Showing> findAllByMovie(Movie movie, Sort sort);
 
+    List<Showing> findAllByMovieInAndShowingDateAfter(List<Movie> movies, LocalDateTime beforeShowings, Sort sort);
+
     List<Showing> findAllByMovieAndShowingDateAfter(Movie movie, LocalDateTime beforeShowings, Sort sort);
 
     List<Showing> findAllByHallAndShowingDateAfter(Hall hall, LocalDateTime beforeShowings);

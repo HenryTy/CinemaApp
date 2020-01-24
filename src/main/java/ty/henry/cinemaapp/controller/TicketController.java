@@ -33,6 +33,8 @@ public class TicketController {
 
         List<Showing> showingsAtTheSameDay;
 
+        boolean ageLimit = false;
+
         if(currentUser.getRole() == Role.ROLE_ADMIN) {
             showingsAtTheSameDay = ticketService.findShowingsForMovieAndDate(showing.getMovie(),
                     showing.getShowingDate().toLocalDate());
@@ -40,10 +42,15 @@ public class TicketController {
         else {
             showingsAtTheSameDay = ticketService.findFutureShowingsForMovieAndDate(showing.getMovie(),
                     showing.getShowingDate().toLocalDate());
+            Integer allowedFromAge = showing.getMovie().getAllowedFromAge();
+            if(allowedFromAge != null && currentUser.age() < allowedFromAge) {
+                ageLimit = true;
+            }
         }
 
         model.addAttribute("chosenShowing", showing);
         model.addAttribute("showings", showingsAtTheSameDay);
+        model.addAttribute("ageLimit", ageLimit);
         return "showing";
     }
 

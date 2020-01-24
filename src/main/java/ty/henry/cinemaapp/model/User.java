@@ -2,6 +2,7 @@ package ty.henry.cinemaapp.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Entity
@@ -73,6 +74,10 @@ public class User {
 
     public List<Notification> getNotifications() {
         return notifications;
+    }
+
+    public int age() {
+        return (int) dateOfBirth.until(LocalDate.now(), ChronoUnit.YEARS);
     }
 
     public void setName(String name) {

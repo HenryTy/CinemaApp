@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ty.henry.cinemaapp.model.Movie;
 
+import java.util.List;
+
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
@@ -11,5 +13,5 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
 
     boolean existsByTitleAndProductionYearAndIdNot(String title, Integer productionYear, Integer id);
 
-    Iterable<Movie> findAllByTitleContainsIgnoreCase(String title);
+    List<Movie> findAllByTitleContainsIgnoreCase(String title);
 }

@@ -52,8 +52,10 @@ public class UserService {
     }
 
     public void addPointToUser(User user) {
-        user.setPoints(user.getPoints() + 1);
-        userRepository.save(user);
+        if(user.getPoints() < 100) {
+            user.setPoints(user.getPoints() + 1);
+            userRepository.save(user);
+        }
     }
 
     public void deleteUser(String email) {

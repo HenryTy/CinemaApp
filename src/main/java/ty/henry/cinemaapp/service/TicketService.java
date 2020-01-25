@@ -74,7 +74,7 @@ public class TicketService {
     }
 
     public boolean hasUserTicketForMovie(User user, Movie movie) {
-        return ticketRepository.findByUserAndShowing_Movie(user, movie) != null;
+        return ticketRepository.findByUserAndShowing_Movie(user, movie).size() > 0;
     }
 
     public Ticket findTicketByNumber(String ticketNumber) {

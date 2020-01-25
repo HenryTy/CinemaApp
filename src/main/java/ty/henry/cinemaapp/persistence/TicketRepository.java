@@ -17,5 +17,5 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, TicketR
 
     List<Ticket> findAllByUser(User user, Sort sort);
 
-    Ticket findByUserAndShowing_Movie(User user, Movie movie);
+    List<Ticket> findByUserAndShowing_Movie(User user, Movie movie);
 }

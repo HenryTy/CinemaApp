@@ -38,21 +38,25 @@ public class AddShowingController {
         return "addShowing";
     }
 
+    private void addCorrectRangesToModel(Model model, ShowingForm showingForm) {
+        Map<Hall, List<TimeRange>> correctRanges = showingTimeChecker
+                .getPossibleShowingStartTimeRanges(showingForm.getDate(), showingForm.getMovie());
+        model.addAttribute("ranges", correctRanges);
+    }
+
     @PostMapping(params = "_step=1")
     public String generateShowingStartTimeRanges(@Validated({ShowingForm.DateValidation.class})
                                                      @ModelAttribute("showingForm") ShowingForm showingForm,
                                                  BindingResult result, Model model) {
         if(!result.hasErrors()) {
-            Map<Hall, List<TimeRange>> correctRanges = showingTimeChecker
-                    .getPossibleShowingStartTimeRanges(showingForm.getDate(), showingForm.getMovie());
-            model.addAttribute("ranges", correctRanges);
+            addCorrectRangesToModel(model, showingForm);
         }
         return "addShowing";
     }
 
     @PostMapping(params = "_finish")
     public String addShowing(@Validated({ShowingForm.TimeValidation.class}) @ModelAttribute("showingForm")
-                                         ShowingForm showingForm, BindingResult result,
+                                         ShowingForm showingForm, BindingResult result, Model model,
                              @ModelAttribute("ranges") Map<Hall, List<TimeRange>> ranges, SessionStatus status) {
         if(!result.hasErrors()) {
             String chosenHallName = showingForm.getHallName();
@@ -67,11 +71,17 @@ public class AddShowingController {
             LocalDate chosenDate = showingForm.getDate();
             LocalTime chosenTime = showingForm.getTime();
             if (showingTimeChecker.isTimeInRanges(chosenHall, chosenDate.atTime(chosenTime), ranges)) {
-                movieService.addShowing(showingForm);
-                status.setComplete();
-                return "redirect:/movie/{movieId}";
+                boolean added = movieService.addShowing(showingForm);
+                if(added) {
+                    status.setComplete();
+                    return "redirect:/movie/{movieId}";
+                }
+                result.rejectValue("time", "message.showingsCollisionError");
+                addCorrectRangesToModel(model, showingForm);
             }
-            result.rejectValue("time", "message.wrongShowingTime");
+            else {
+                result.rejectValue("time", "message.wrongShowingTime");
+            }
         }
         return "addShowing";
     }

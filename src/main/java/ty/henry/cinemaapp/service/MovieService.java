@@ -8,6 +8,7 @@ import ty.henry.cinemaapp.dto.MovieForm;
 import ty.henry.cinemaapp.dto.ShowingForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.error.EntityNotExistException;
+import ty.henry.cinemaapp.logic.TimeRange;
 import ty.henry.cinemaapp.model.Hall;
 import ty.henry.cinemaapp.model.Movie;
 import ty.henry.cinemaapp.model.MovieGenre;
@@ -82,13 +83,24 @@ public class MovieService {
         return true;
     }
 
-    public void addShowing(ShowingForm showingForm) {
+    public boolean addShowing(ShowingForm showingForm) {
         Movie movie = showingForm.getMovie();
         Hall hall = showingForm.getHall();
         LocalDate date = showingForm.getDate();
         LocalTime time = showingForm.getTime();
         Showing showing = new Showing(movie, hall, date.atTime(time));
+        if(checkShowingCollisions(showing)) {
+            return false;
+        }
         showingRepository.save(showing);
+        return true;
+    }
+
+    public boolean checkShowingCollisions(Showing newShowing) {
+        TimeRange newShowingTimeRange = new TimeRange(newShowing.getShowingDate(),
+                newShowing.getMovie().getLengthMinutes());
+        return showingRepository.countShowingCollisions(newShowingTimeRange.getStartTime(),
+                newShowingTimeRange.getEndTime(), newShowing.getHall().getId()) > 0;
     }
 
     public List<Showing> findAllShowingsForMovie(Movie movie) {

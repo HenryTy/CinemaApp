@@ -3,6 +3,7 @@ package ty.henry.cinemaapp.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ty.henry.cinemaapp.dto.UserForm;
 import ty.henry.cinemaapp.error.EntityAlreadyExistsException;
 import ty.henry.cinemaapp.error.EntityNotExistException;
@@ -58,6 +59,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void deleteUser(String email) {
         userRepository.deleteByEmail(email);
     }

@@ -28,7 +28,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "Us_Not_Rel",
             joinColumns = {@JoinColumn(name = "user_id")},
